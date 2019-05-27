@@ -6,9 +6,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.MenuScreenController">
+<Pane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.MenuScreenController">
    <children>
-      <ImageView fx:id="imgFieldView" fitHeight="400.0" fitWidth="900.0" layoutX="66.0" layoutY="62.0" onKeyPressed="#scrollImage" onMouseClicked="#imgDoubleClick" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imgFieldView" fitHeight="400.0" fitWidth="900.0" layoutX="66.0" layoutY="62.0" nodeOrientation="RIGHT_TO_LEFT" onKeyPressed="#scrollImage" onMouseClicked="#imgDoubleClick" pickOnBounds="true" preserveRatio="true" />
       <Button fx:id="rightButton" layoutX="238.0" layoutY="576.0" mnemonicParsing="false" text="Crtl + VK_RIGHT" />
       <Button fx:id="leftButton" layoutX="73.0" layoutY="576.0" mnemonicParsing="false" text="Crtl + VK_LEFT" />
       <Button fx:id="upButton" layoutX="164.0" layoutY="529.0" mnemonicParsing="false" text="Crtl + VK_UP" />
