@@ -64,11 +64,15 @@ public class MenuScreenController implements Initializable{
     int numberOfPhoto = 0;
     int addKeyHandlerCounter = 0;
     final FileChooser fileChooser = new FileChooser();
+
+    public MenuScreenController() {
+    }
+    
+    
     
     void setMainController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
     }
-
     
     
     @FXML
@@ -76,7 +80,7 @@ public class MenuScreenController implements Initializable{
         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2) {
                 fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"),
-                        new ExtensionFilter(".jpg/.jpeg", "*.jpeg", "*.jpg"),
+                        new ExtensionFilter(".jpg / .jpeg", "*.jpeg", "*.jpg"),
                         new ExtensionFilter(".png", "*.png"));
                 selectedImgsList = fileChooser.showOpenMultipleDialog(null);
                 if(selectedImgsList != null) {
@@ -93,6 +97,7 @@ public class MenuScreenController implements Initializable{
         }
     }
     
+    @FXML
     public void imageRotation(KeyEvent event) {
         if(event.getCode().equals(KeyCode.R)){
             imgFieldView.setRotate(90);
@@ -101,7 +106,9 @@ public class MenuScreenController implements Initializable{
         }
     }
     
+    @FXML
     public void getNewImage(KeyEvent event) {
+//        zrobić zabezpieczenie przed cofnięciem na pozycji 0
         if(event.getCode().equals(KeyCode.I)) {
             addKeyHandlerCounter++;
             singleFile = selectedImgsList.get(addKeyHandlerCounter);
@@ -132,7 +139,7 @@ public class MenuScreenController implements Initializable{
                 }
             }
         });
-        imgFieldView.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        menuPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 imageRotation(event);

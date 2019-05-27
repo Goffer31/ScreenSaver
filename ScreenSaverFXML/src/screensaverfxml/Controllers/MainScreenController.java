@@ -21,7 +21,7 @@ public class MainScreenController {
     private Pane mainPane;
     
     private void loadMenuScreen() throws IOException {
-       FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MenuScreen.fxml"));
+       FXMLLoader loader = new FXMLLoader(this.getClass().getResource("screensaverfxml/fxmlConfig/MenuScreen.fxml"));
        Pane menuPane = loader.load();
        MenuScreenController menuScreenController = loader.getController();
        menuScreenController.setMainController(this);
