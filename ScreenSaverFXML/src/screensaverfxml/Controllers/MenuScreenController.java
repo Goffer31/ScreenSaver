@@ -64,31 +64,19 @@ public class MenuScreenController {
     int addKeyHandlerCounter = 0;
     
     
-//    @FXML
-//    public void scrollImage(KeyEvent key) throws MalformedURLException{
-//        int counter = 0;
-//        int listSize = selectedImgsList.size();
-//        
-//        if(key.getCode() == KeyCode.LEFT && key.getCode() == KeyCode.ALT) {
-//            counter++;
-//        }
-//        
-//        if(key.getCode() == KeyCode.RIGHT) {
-//            counter--;
-//        }
-//        
-//        if(counter < 0) {
-//            counter = listSize - counter;
-//        }
-//        
-//        
-//        
-//        singleFile = selectedImgsList.get(counter);
-//        Image image = new Image(singleFile.toURL().toString(),
-//            900, 400,
-//            true, true, true);
-//        imgFieldView.setImage(image);
-//    }
+    @FXML
+    public void scrollImage(KeyEvent key) throws MalformedURLException{
+        int counter = 0;
+        int listSize = selectedImgsList.size();
+
+        if(key.getCode() == KeyCode.LEFT && key.getCode() == KeyCode.ALT) {
+            counter++;
+        }
+
+        if(key.getCode() == KeyCode.RIGHT) {
+            counter--;
+        }
+    }
     
     @FXML
     private void addKeyHandler(ImageView imageView) {
