@@ -14,6 +14,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -22,10 +24,12 @@ import javafx.stage.FileChooser.ExtensionFilter;
  *
  * @author root
  */
-public class MenuScreenController {
+public class MenuScreenController{
  
    @FXML
    ImageView imgFieldView;
+   int photoSwipCounter = 0;
+   Image image;
       
    private Desktop desktop = Desktop.getDesktop();
    private MainScreenController mainScreenController;
@@ -51,10 +55,11 @@ public class MenuScreenController {
                 selectedImgsList = fileChooser.showOpenMultipleDialog(null);
                 if(selectedImgsList != null) {
                         singleFile = selectedImgsList.get(0);
-                        Image image = new Image(singleFile.toURL().toString(),
+                        image = new Image(singleFile.toURL().toString(),
                         900, 400,
                         true, true, true);
                         imgFieldView.setImage(image);
+                        System.out.println(singleFile.getName());
                 } else {
                     System.out.println("No File Selected");
                 }
@@ -63,10 +68,69 @@ public class MenuScreenController {
     }
     
     @FXML
-    public void handleOnKeyPressed(ActionEvent event) {
+    public void handleOnKeyPressed(KeyEvent event) {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                //Background
+                getNewImageHandler(event);
+                imageRotation(event);
+                
+                
+            }
+        };
         
+        new Thread(task).start();
     }
+    
+    @FXML
+    public void getNewImageHandler(KeyEvent event) {
+        imgFieldView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.N) {
+                photoSwipCounter++;
+            } else if (e.getCode() == KeyCode.P) {
+                photoSwipCounter--;
+            }
+        });
+        
+//        if (event.getCode().equals(KeyCode.N)) {
+//            photoSwipCounter++;
+//        }
+//        if (event.getCode().equals(KeyCode.P)) {
+//            photoSwipCounter--;
+//        }
+        
+        if (photoSwipCounter < 0) {
+            singleFile = selectedImgsList.get(selectedImgsList.size() - photoSwipCounter);
+        } else {
+            singleFile = selectedImgsList.get(photoSwipCounter);
+        }
+        
+        image = new Image(singleFile.toURI().toString(),
+                900, 400,
+                true, true, true);
+        imgFieldView.setImage(image);
+        System.out.println(singleFile.getName());
+
+    }
+    
+    @FXML
+    public void imageRotation(KeyEvent event) {
+        if(event.getCode().equals(KeyCode.L)) {
+            imgFieldView.setRotate(90);
+        }
+        if(event.getCode().equals(KeyCode.R)) {
+            imgFieldView.setRotate(-90);
+        }
+    }
+    
 
 
 }
    
+//https://www.programcreek.com/java-api-examples/?class=javafx.scene.Scene&method=setOnKeyPressed
+//https://www.youtube.com/watch?v=UotiVqAjhDY
+//https://www.youtube.com/watch?v=MZAFix_-9UI <- best 
+//https://www.youtube.com/watch?v=bUxwGl7W9-E
+//https://www.youtube.com/watch?v=xwWARVJB5g0
+
