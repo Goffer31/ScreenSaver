@@ -60,23 +60,14 @@ public class MenuScreenController{
                         true, true, true);
                         imgFieldView.setImage(image);
                         System.out.println(singleFile.getName());
+                        for(int i = 0; i < selectedImgsList.size(); i++) {
+                            System.out.println(selectedImgsList.get(i).getName());                            
+                        }
                 } else {
                     System.out.println("No File Selected");
                 }
             }
         }
-        imgFieldView.setOnKeyPressed(e -> {
-            System.out.println("Before if clicked");
-
-            if (e.getCode() == KeyCode.N) {
-                photoSwipCounter++;
-                System.out.println("P clicked");
-            } else if (e.getCode() == KeyCode.P) {
-                photoSwipCounter--;
-                System.out.println("N clicked");
-
-            }
-        });
     }
     
     @FXML
@@ -98,14 +89,14 @@ public class MenuScreenController{
     @FXML
     public void getNewImageHandler(KeyEvent event) {
         System.out.println(singleFile.getName());
-//        imgFieldView.setOnKeyPressed(e -> {
-//            if (e.getCode() == KeyCode.N) {
-//                photoSwipCounter++;
-//                System.out.println("P clicked");
-//            } else if (e.getCode() == KeyCode.P) {
-//                photoSwipCounter--;
-//            }
-//        });
+        imgFieldView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.N) {
+                photoSwipCounter++;
+                System.out.println("P clicked");
+            } else if (e.getCode() == KeyCode.P) {
+                photoSwipCounter--;
+            }
+        });
         
 //        if (event.getCode().equals(KeyCode.N)) {
 //            photoSwipCounter++;
@@ -124,8 +115,6 @@ public class MenuScreenController{
                 900, 400,
                 true, true, true);
         imgFieldView.setImage(image);
-        
-
     }
     
     @FXML
