@@ -49,6 +49,7 @@ public class MenuScreenController{
     
     @FXML
     public void imgDoubleClick(MouseEvent mouseEvent) throws MalformedURLException {
+        imgFieldView.requestFocus();
         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2) {
                 fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
@@ -88,13 +89,16 @@ public class MenuScreenController{
     
     @FXML
     public void getNewImageHandler(KeyEvent event) {
+        imgFieldView.requestFocus();
         System.out.println(singleFile.getName());
         imgFieldView.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.N) {
                 photoSwipCounter++;
-                System.out.println("P clicked");
+                System.out.println("N clicked");
             } else if (e.getCode() == KeyCode.P) {
                 photoSwipCounter--;
+                System.out.println("P clicked");
+
             }
         });
         
@@ -119,14 +123,22 @@ public class MenuScreenController{
     
     @FXML
     public void imageRotation(KeyEvent event) {
-        if(event.getCode().equals(KeyCode.L)) {
+        if (event.getCode().equals(KeyCode.L)) {
             imgFieldView.setRotate(90);
+            System.out.println("L clicked");
+
         }
-        if(event.getCode().equals(KeyCode.R)) {
+        if (event.getCode().equals(KeyCode.R)) {
             imgFieldView.setRotate(-90);
+            System.out.println("R clicked");
+
         }
     }
     
+    @FXML 
+    public void savePhoto() {
+        
+    }
 
 
 }
