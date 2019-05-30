@@ -6,18 +6,20 @@
 package screensaverfxml.Controllers;
 
 import java.awt.Desktop;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 /**
@@ -91,34 +93,82 @@ public class MenuScreenController{
     public void getNewImageHandler(KeyEvent event) {
         imgFieldView.requestFocus();
         System.out.println(singleFile.getName());
-        imgFieldView.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.N) {
-                photoSwipCounter++;
-                System.out.println("N clicked");
-            } else if (e.getCode() == KeyCode.P) {
-                photoSwipCounter--;
-                System.out.println("P clicked");
+        
+        if (event.getCode().equals(KeyCode.N)) {
+            photoSwipCounter++;
+            System.out.println("N clicked");
 
-            }
-        });
-        
-//        if (event.getCode().equals(KeyCode.N)) {
-//            photoSwipCounter++;
-//        }
-//        if (event.getCode().equals(KeyCode.P)) {
-//            photoSwipCounter--;
-//        }
-        
-        if (photoSwipCounter < 0) {
-            singleFile = selectedImgsList.get(selectedImgsList.size() - photoSwipCounter);
-        } else {
-            singleFile = selectedImgsList.get(photoSwipCounter);
         }
-        
+        if (event.getCode().equals(KeyCode.P)) {
+            photoSwipCounter--;
+            System.out.println("P clicked");
+        }
+
+        if (photoSwipCounter < 0) {
+            photoSwipCounter = selectedImgsList.size() - 1;
+        } else if (photoSwipCounter >= selectedImgsList.size()) {
+            photoSwipCounter = 0;
+        }
+        singleFile = selectedImgsList.get(photoSwipCounter);
+
         image = new Image(singleFile.toURI().toString(),
                 900, 400,
                 true, true, true);
         imgFieldView.setImage(image);
+        
+        /*
+        from imageRotation()
+        */
+        
+        Rectangle2D viewPoint = imgFieldView.getViewport();
+        Rotate rotation = new Rotate();
+        
+        if (event.getCode().equals(KeyCode.L)) {
+            
+            
+            
+            
+//            rotation.setPivotX(imgFieldView.getRotate());
+            
+            imgFieldView.getLocalToSceneTransform();
+//            imgFieldView.setFitHeight(400);
+//            imgFieldView.setFitWidth(900);
+            imgFieldView.setPreserveRatio(true);
+//            rotation.setPivotX(imgFieldView.getFitWidth() /2);
+//            rotation.setPivotY(imgFieldView.getFitHeight() /2);    
+//            rotation.setPivotY(imgFieldView.getImage().getRequestedHeight() /2);
+//            rotation.setPivotX(imgFieldView.getImage().getRequestedWidth() /2);
+            
+//            rotation.setPivotX(viewPoint.getMaxX() /2);
+//            rotation.setPivotY(viewPoint.getMaxY()/2);
+//            rotation.setAngle(rotation.getAngle() + 90);
+
+//            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getFitHeight(), imgFieldView.getFitWidth()));
+//            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getRotationAxis()));
+//            imgFieldView.getTransforms().add(new Rotate(90,
+//                    imgFieldView.getBoundsInParent().getMinX()
+//                    + (imgFieldView.getBoundsInLocal().getWidth() / 2),
+//                    imgFieldView.getBoundsInParent().getMinY()
+//                    + (imgFieldView.getBoundsInLocal().getHeight() / 2)));
+
+//            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getFitWidth()/2, imgFieldView.getFitHeight()/2));
+            imgFieldView.getTransforms().add(new Rotate(90, image.getRequestedWidth(), image.getRequestedHeight()));
+            
+            
+            
+//            imgFieldView.setRotate(90);
+//            rotation.setPivotX(imgFieldView.getRotate());
+            imgFieldView.getTransforms().add(rotation);
+//            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getFitHeight(), imgFieldView.getFitWidth()));
+//            viewPoint = imgFieldView.getViewport();
+            System.out.println("L clicked");
+        }
+        
+        if (event.getCode().equals(KeyCode.R)) {
+            imgFieldView.setRotate(-90);
+            imgFieldView.getViewport();
+            System.out.println("R clicked");
+        }
     }
     
     @FXML
@@ -131,12 +181,16 @@ public class MenuScreenController{
         if (event.getCode().equals(KeyCode.R)) {
             imgFieldView.setRotate(-90);
             System.out.println("R clicked");
-
         }
     }
     
     @FXML 
-    public void savePhoto() {
+    public void savePhoto(File singleFile) {
+        File fileDirectoryOne = fileChooser.getInitialDirectory();
+        
+        File fileDirectory = new File(System.getProperty(fileChooser.getInitialDirectory().toURI().toString()));
+        
+        
         
     }
 
