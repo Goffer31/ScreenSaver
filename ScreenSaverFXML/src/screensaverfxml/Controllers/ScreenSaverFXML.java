@@ -24,7 +24,7 @@ public class ScreenSaverFXML extends Application {
         Scene scene = new Scene(mainPane, 1000, 700);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Screen Saver");
-        
+//        primaryStage.setFullScreen(true);
         primaryStage.show();
         
        scene.getRoot().requestFocus();

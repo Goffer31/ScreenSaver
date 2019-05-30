@@ -49,23 +49,48 @@ public class MenuScreenController{
     List<File> selectedImgsList;
     File singleFile;
     
+    public void centerImage(ImageView imgView) {
+        Image img = imgView.getImage();
+        if (img != null) {
+            double imageWidth = 0;
+            double imageHeight = 0;
+            double ratioX = imgView.getFitHeight() / img.getWidth();
+            double ratioY = imgView.getFitWidth() / img.getHeight();
+            double reducCoeff = 0;
+            if (ratioX >= ratioY) {
+                reducCoeff = ratioY;
+            } else {
+                reducCoeff = ratioX;
+            }
+            imageWidth = img.getWidth() * reducCoeff;
+            imageHeight = img.getHeight() * reducCoeff;
+            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
+            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+        }
+    }
+    
     @FXML
     public void imgDoubleClick(MouseEvent mouseEvent) throws MalformedURLException {
+
+        // image view setting position
+        centerImage(imgFieldView);
+        // end of image view setting position
         imgFieldView.requestFocus();
-        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-            if(mouseEvent.getClickCount() == 2) {
+
+        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+            if (mouseEvent.getClickCount() == 2) {
                 fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
                 selectedImgsList = fileChooser.showOpenMultipleDialog(null);
-                if(selectedImgsList != null) {
-                        singleFile = selectedImgsList.get(0);
-                        image = new Image(singleFile.toURL().toString(),
-                        900, 400,
-                        true, true, true);
-                        imgFieldView.setImage(image);
-                        System.out.println(singleFile.getName());
-                        for(int i = 0; i < selectedImgsList.size(); i++) {
-                            System.out.println(selectedImgsList.get(i).getName());                            
-                        }
+                if (selectedImgsList != null) {
+                    singleFile = selectedImgsList.get(0);
+                    image = new Image(singleFile.toURL().toString(),
+                            900, 400,
+                            true, true, true);
+                    imgFieldView.setImage(image);
+                    System.out.println(singleFile.getName());
+                    for (int i = 0; i < selectedImgsList.size(); i++) {
+                        System.out.println(selectedImgsList.get(i).getName());
+                    }
                 } else {
                     System.out.println("No File Selected");
                 }
@@ -74,23 +99,8 @@ public class MenuScreenController{
     }
     
     @FXML
-    public void handleOnKeyPressed(KeyEvent event) {
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                //Background
-                getNewImageHandler(event);
-                imageRotation(event);
-                
-                
-            }
-        };
-        
-        new Thread(task).start();
-    }
-    
-    @FXML
     public void getNewImageHandler(KeyEvent event) {
+        centerImage(imgFieldView);
         imgFieldView.requestFocus();
         System.out.println(singleFile.getName());
         
