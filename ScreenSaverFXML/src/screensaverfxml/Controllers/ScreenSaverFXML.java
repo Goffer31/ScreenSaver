@@ -26,6 +26,8 @@ public class ScreenSaverFXML extends Application {
         primaryStage.setTitle("Screen Saver");
         
         primaryStage.show();
+        
+       scene.getRoot().requestFocus();
     }
 
     /**
