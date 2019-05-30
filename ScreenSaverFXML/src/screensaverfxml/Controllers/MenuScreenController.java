@@ -11,15 +11,28 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.List;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.StackPane;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 /**
@@ -28,12 +41,14 @@ import javafx.stage.FileChooser.ExtensionFilter;
  */
 public class MenuScreenController{
  
+    @FXML
+    private StackPane stackImgPane;
    @FXML
    ImageView imgFieldView;
    int photoSwipCounter = 0;
    Image image;
       
-   private Desktop desktop = Desktop.getDesktop();
+//   private Desktop desktop = Desktop.getDesktop();
    private MainScreenController mainScreenController;
    final FileChooser fileChooser = new FileChooser();
     
@@ -135,8 +150,32 @@ public class MenuScreenController{
         
         if (event.getCode().equals(KeyCode.L)) {
             
+            SnapshotParameters params = new SnapshotParameters();
+            Canvas canvas = new Canvas(100,100);
+            
+            image = imgFieldView.snapshot(params, null);
+            canvas.getGraphicsContext2D().drawImage(image, 0, 0);
+            //dokonczyc z https://stackoverflow.com/questions/40059836/rotating-image-in-javafx
+            
+//            stackImgPane.setBackground(new Background(new BackgroundImage(
+//                    imgFieldView.getImage(), BackgroundRepeat.NO_REPEAT,
+//                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+//                    BackgroundSize.DEFAULT)));
             
             
+//            stackImgPane.getTransforms().add(new Rotate(90));
+            
+//            imgFieldView.setRotationAxis(Point3D.ZERO);
+            
+//            rotation.setAngle(90);
+//            rotation.setPivotX(imgFieldView.getImage().getHeight()/2);
+//            rotation.setPivotY(imgFieldView.getImage().getWidth()/2);
+
+
+//            imgFieldView.getTransforms().add(new Rotate(90, Rotate.Z_AXIS));
+           
+//              addRotate(stackImgPane, Rotate.Z_AXIS, 45);
+
             
 //            rotation.setPivotX(imgFieldView.getRotate());
             
@@ -155,14 +194,20 @@ public class MenuScreenController{
 
 //            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getFitHeight(), imgFieldView.getFitWidth()));
 //            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getRotationAxis()));
+            imgFieldView.getTransforms().add(new Rotate(90,
+                    imgFieldView.getBoundsInParent().getMinX()
+                    + (imgFieldView.getBoundsInLocal().getWidth() / 2),
+                    imgFieldView.getBoundsInParent().getMinY()
+                    + (imgFieldView.getBoundsInLocal().getHeight() / 2)));
+
 //            imgFieldView.getTransforms().add(new Rotate(90,
-//                    imgFieldView.getBoundsInParent().getMinX()
-//                    + (imgFieldView.getBoundsInLocal().getWidth() / 2),
-//                    imgFieldView.getBoundsInParent().getMinY()
-//                    + (imgFieldView.getBoundsInLocal().getHeight() / 2)));
+//                    imgFieldView.getFitWidth()
+//                    - (imgFieldView.getImage().getWidth() / 2),
+//                    imgFieldView.getFitHeight()
+//                    - (imgFieldView.getImage().getHeight() / 2)));
 
 //            imgFieldView.getTransforms().add(new Rotate(90, imgFieldView.getFitWidth()/2, imgFieldView.getFitHeight()/2));
-            imgFieldView.getTransforms().add(new Rotate(90, image.getRequestedWidth(), image.getRequestedHeight()));
+//            imgFieldView.getTransforms().add(new Rotate(90, image.getRequestedWidth(), image.getRequestedHeight()));
             
             
             
@@ -180,6 +225,18 @@ public class MenuScreenController{
             System.out.println("R clicked");
         }
     }
+    
+//    public static void addRotate(Node node, Point3D rotationAxis, double angle) {
+//    ObservableList<Transform> transforms = node.getTransforms();
+//    try {
+//        for (Transform t : transforms) {
+//            rotationAxis = t.inverseDeltaTransform(rotationAxis);
+//        }
+//    } catch (NonInvertibleTransformException ex) {
+//        throw new IllegalStateException(ex);
+//    }
+//    transforms.add(new Rotate(angle, rotationAxis));
+//}
     
     @FXML
     public void imageRotation(KeyEvent event) {
@@ -206,10 +263,30 @@ public class MenuScreenController{
 
 
 }
-   
+//Key Listener
 //https://www.programcreek.com/java-api-examples/?class=javafx.scene.Scene&method=setOnKeyPressed
 //https://www.youtube.com/watch?v=UotiVqAjhDY
 //https://www.youtube.com/watch?v=MZAFix_-9UI <- best 
 //https://www.youtube.com/watch?v=bUxwGl7W9-E
 //https://www.youtube.com/watch?v=xwWARVJB5g0
+
+
+//Save files
+//https://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java <---- very good
+//https://www.youtube.com/watch?v=F4b55du_Nic <------- very good 
+//https://stackoverflow.com/questions/6366743/saving-files-to-a-specific-directory-in-java
+//https://stackoverflow.com/questions/26693550/how-can-i-save-a-file-in-the-current-directory
+//https://stackoverflow.com/questions/16239130/java-user-dir-property-what-exactly-does-it-mean
+//https://www.genuinecoder.com/save-files-javafx-filechooser/
+//https://www.tutorialspoint.com/java/io/java_io_file.htm
+//https://stackoverflow.com/questions/10083447/selecting-folder-destination-in-java
+//https://stackoverflow.com/questions/20958668/jfilechooser-getcurrentdirectory-to-string
+//https://docs.oracle.com/javase/6/docs/api/java/io/File.html
+//https://www.rgagnon.com/javadetails/java-0370.html
+//http://www.java2s.com/Code/Java/Swing-JFC/SelectadirectorywithaJFileChooser.htm
+//https://stackoverflow.com/questions/14967449/read-from-a-file-that-is-in-the-same-folder-as-the-jar-file
+
+//Rotation
+//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated/54142453
+//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated
 
