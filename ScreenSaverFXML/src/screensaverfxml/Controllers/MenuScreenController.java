@@ -6,8 +6,14 @@
 package screensaverfxml.Controllers;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -34,10 +40,15 @@ public class MenuScreenController{
     int photoSwipCounter = 0;
     Image image;
     double angleRotation;
+    
 
    private MainScreenController mainScreenController;
    
    final FileChooser fileChooser = new FileChooser();   
+   
+   List<File> selectedImgsList;
+    File singleFile;
+    File selectedDirectory = null;
    
     void setMainController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
@@ -47,9 +58,6 @@ public class MenuScreenController{
     public void exit() {
         Platform.exit();
     }
-
-    List<File> selectedImgsList;
-    File singleFile;
     
     //Method to make image on the center of the screen
     public void centerImage(ImageView imgView) {
@@ -119,29 +127,18 @@ public class MenuScreenController{
         centerImage(imgFieldView);
         imgFieldView.requestFocus();
         System.out.println(singleFile.getName());
-
+        
         if (event.getCode().equals(KeyCode.N)) {
             photoSwipCounter++;
             System.out.println("N clicked");
-
         }
+
         if (event.getCode().equals(KeyCode.P)) {
             photoSwipCounter--;
             System.out.println("P clicked");
         }
-
-        if (photoSwipCounter < 0) {
-            photoSwipCounter = selectedImgsList.size() - 1;
-        } else if (photoSwipCounter >= selectedImgsList.size()) {
-            photoSwipCounter = 0;
-        }
-        singleFile = selectedImgsList.get(photoSwipCounter);
-
-        image = new Image(singleFile.toURI().toString(),
-                900, 400,
-                true, true, true);
-        imgFieldView.setImage(image);
-        //---***---***---***---***---***---***---***---***---***---***---***---*
+        
+        photoSweep(photoSwipCounter);
         
         /**
          * Code responsible for rotate the image
@@ -170,13 +167,34 @@ public class MenuScreenController{
         }
         
         if(event.getCode().equals(KeyCode.Z)) {
-            savePhoto(singleFile, patchChooser());
+            savePhotoAndDelete(singleFile, patchChooser());
+        }
+        
+        if(event.getCode().equals(KeyCode.X)) {
+            try {
+                savePhotoWithCopy(singleFile, patchChooser());
+            } catch (IOException ex) {
+                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         
     }
+
+    private void photoSweep(int photoSwipCounter) {
+        if (photoSwipCounter < 0) {
+            photoSwipCounter = selectedImgsList.size() - 1;
+        } else if (photoSwipCounter >= selectedImgsList.size()) {
+            photoSwipCounter = 0;
+        }
+        singleFile = selectedImgsList.get(photoSwipCounter);
+        
+        image = new Image(singleFile.toURI().toString(),
+                900, 400,
+                true, true, true);
+        imgFieldView.setImage(image);
+    }
     
-    File selectedDirectory = null;
     @FXML
     public String patchChooser() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -189,32 +207,24 @@ public class MenuScreenController{
     }
     
     @FXML
-    public void savePhoto(File singleFile, String directory) {
-//        File fileDirectoryOne = fileChooser.getInitialDirectory();
-//        File fileDirectory = new File(System.getProperty(fileChooser.getInitialDirectory().toURI().toString()));
-//        String filePathString = fileDirectory.getPath();
-//        System.out.println("Path: " + filePathString);
-
-        
-//        String selectedFolder = fileChooser.showSaveDialog(null).getAbsolutePath();
-//        File temporaryFileBox = singleFile;
-//        temporaryFileBox.renameTo(new File(selectedFolder));
-////        singleFile.delete();
-//       
-
-//        String getSingleFilePath = singleFile.getAbsolutePath();
-//        System.out.println(getSingleFilePath);
-//        String singleFileName = singleFile.getName();
-//        System.out.println("singleFileName: " + singleFileName);
-//        String fileNameToSave = directory + "\\" + singleFileName;
-//        System.out.println("fileNameToSave: " + fileNameToSave);
-
-        
+    private void savePhotoWithCopy(File singleFile, String directory) throws IOException {
+        Path sourceDirectory = Paths.get(singleFile.getAbsolutePath());
+        String targetDirectoryString = directory + "\\" + singleFile.getName();
+        Path targetDirectory = Paths.get(targetDirectoryString);
+        Files.copy(sourceDirectory, targetDirectory);
+        selectedImgsList.get(photoSwipCounter).delete();
+        photoSwipCounter++;
+        photoSweep(photoSwipCounter);
+    }
+    
+    @FXML
+    public void savePhotoAndDelete(File singleFile, String directory) {
         String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
         System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
         singleFile.renameTo(new File(fileNameAndPathToSave));
-        
-        
+        selectedImgsList.get(photoSwipCounter).delete();
+        photoSwipCounter++;
+        photoSweep(photoSwipCounter);
     }
 
 
