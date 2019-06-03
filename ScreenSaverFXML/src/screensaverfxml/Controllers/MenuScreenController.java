@@ -17,8 +17,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+
 /**
  *
  * @author root
@@ -33,10 +35,10 @@ public class MenuScreenController{
     Image image;
     double angleRotation;
 
-//   private Desktop desktop = Desktop.getDesktop();
    private MainScreenController mainScreenController;
-   final FileChooser fileChooser = new FileChooser();
-    
+   
+   final FileChooser fileChooser = new FileChooser();   
+   
     void setMainController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
     }
@@ -53,11 +55,11 @@ public class MenuScreenController{
     public void centerImage(ImageView imgView) {
         Image img = imgView.getImage();
         if (img != null) {
-            double imageWidth = 0;
-            double imageHeight = 0;
+            double imageWidth;
+            double imageHeight;
             double ratioX = imgView.getFitHeight() / img.getWidth();
             double ratioY = imgView.getFitWidth() / img.getHeight();
-            double reducCoeff = 0;
+            double reducCoeff;
             
             if (ratioX >= ratioY) {
                 reducCoeff = ratioY;
@@ -78,7 +80,12 @@ public class MenuScreenController{
         // image view setting position
 //        centerImage(imgFieldView);
         // end of image view setting position
+        
+        /**
+         * requestFocus() gives us opportunity to operate on imgFieldView
+         */
         imgFieldView.requestFocus();
+        
         /**
          * Code responsible for load photos from a driver
         */
@@ -99,13 +106,6 @@ public class MenuScreenController{
                 } else {
                     System.out.println("No File Selected");
                 }
-                /**
-                 * Code responsible for choose save destination folder
-                 */
-                
-                
-                
-                
             }
         }
     }
@@ -160,16 +160,61 @@ public class MenuScreenController{
         }
         //---***---***---***---***---***---***---***---***---***---***---***---*
         
+        /**
+         * Code responsible for saving photos into four different locations 
+         * wired to key 'Z', key 'V' is responsible for choosing folder for save
+         */
+        
+        if(event.getCode().equals(KeyCode.V)) {
+            patchChooser();
+        }
+        
+        if(event.getCode().equals(KeyCode.Z)) {
+            savePhoto(singleFile, patchChooser());
+        }
+        
         
     }
     
+    File selectedDirectory = null;
+    @FXML
+    public String patchChooser() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select save location");
+        if (selectedDirectory == null) {
+            selectedDirectory = directoryChooser.showDialog(null);
+        }
+        System.out.println("Directory choosed: " + selectedDirectory.getAbsolutePath());
+        return selectedDirectory.getAbsolutePath();
+    }
     
     @FXML
-    public void savePhoto(File singleFile) {
-        File fileDirectoryOne = fileChooser.getInitialDirectory();
+    public void savePhoto(File singleFile, String directory) {
+//        File fileDirectoryOne = fileChooser.getInitialDirectory();
+//        File fileDirectory = new File(System.getProperty(fileChooser.getInitialDirectory().toURI().toString()));
+//        String filePathString = fileDirectory.getPath();
+//        System.out.println("Path: " + filePathString);
 
-        File fileDirectory = new File(System.getProperty(fileChooser.getInitialDirectory().toURI().toString()));
+        
+//        String selectedFolder = fileChooser.showSaveDialog(null).getAbsolutePath();
+//        File temporaryFileBox = singleFile;
+//        temporaryFileBox.renameTo(new File(selectedFolder));
+////        singleFile.delete();
+//       
 
+//        String getSingleFilePath = singleFile.getAbsolutePath();
+//        System.out.println(getSingleFilePath);
+//        String singleFileName = singleFile.getName();
+//        System.out.println("singleFileName: " + singleFileName);
+//        String fileNameToSave = directory + "\\" + singleFileName;
+//        System.out.println("fileNameToSave: " + fileNameToSave);
+
+        
+        String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
+        System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
+        singleFile.renameTo(new File(fileNameAndPathToSave));
+        
+        
     }
 
 
