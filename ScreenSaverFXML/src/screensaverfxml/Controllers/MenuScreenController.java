@@ -15,17 +15,24 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 
 /**
  *
@@ -37,10 +44,10 @@ public class MenuScreenController{
     private StackPane stackImgPane;
     @FXML
     ImageView imgFieldView;
-    int photoSwipCounter = 0;
+    
     Image image;
     double angleRotation;
-    
+    int photoSwipCounter = 0;
 
    private MainScreenController mainScreenController;
    
@@ -50,14 +57,11 @@ public class MenuScreenController{
     File singleFile;
     File selectedDirectory = null;
    
+    
     void setMainController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
     }
     
-    @FXML
-    public void exit() {
-        Platform.exit();
-    }
     
     //Method to make image on the center of the screen
     public void centerImage(ImageView imgView) {
@@ -138,7 +142,7 @@ public class MenuScreenController{
             System.out.println("P clicked");
         }
         
-        photoSweep(photoSwipCounter);
+        photoSweep();
         
         /**
          * Code responsible for rotate the image
@@ -177,11 +181,9 @@ public class MenuScreenController{
                 Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
     }
 
-    private void photoSweep(int photoSwipCounter) {
+    private void photoSweep() {
         if (photoSwipCounter < 0) {
             photoSwipCounter = selectedImgsList.size() - 1;
         } else if (photoSwipCounter >= selectedImgsList.size()) {
@@ -214,7 +216,7 @@ public class MenuScreenController{
         Files.copy(sourceDirectory, targetDirectory);
         selectedImgsList.get(photoSwipCounter).delete();
         photoSwipCounter++;
-        photoSweep(photoSwipCounter);
+        photoSweep();
     }
     
     @FXML
@@ -224,11 +226,45 @@ public class MenuScreenController{
         singleFile.renameTo(new File(fileNameAndPathToSave));
         selectedImgsList.get(photoSwipCounter).delete();
         photoSwipCounter++;
-        photoSweep(photoSwipCounter);
+        photoSweep();
+    }
+    
+    
+    
+    
+
+    //---***---***---***---***---***---***---***---***---***---***---***---*---*
+    /**
+     * Code responsible for load settings window
+     */
+    
+    @FXML
+    MenuItem settingsMenuItem;
+    
+    @FXML
+    public void showSettingsWindow(ActionEvent event) {
+        try {
+            FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource("/screensaverfxml/fxmlConfig/SettingsScreen.fxml"));
+            Parent root1 = (Parent) fXMLLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Settings");
+            stage.setScene(new Scene(root1));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println("Can't load settings window");
+        }
+    }
+    
+    @FXML
+    public void exit() {
+        Platform.exit();
     }
 
-
 }
+
+//Creating a settings window
+//https://www.youtube.com/watch?v=5NM27PP5rME
+
 //Key Listener
 //https://www.programcreek.com/java-api-examples/?class=javafx.scene.Scene&method=setOnKeyPressed
 //https://www.youtube.com/watch?v=UotiVqAjhDY
@@ -255,4 +291,8 @@ public class MenuScreenController{
 //Rotation
 //https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated/54142453
 //https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated
+
+//Visual side
+//https://www.youtube.com/watch?v=1myTZQowNZw
+
 
