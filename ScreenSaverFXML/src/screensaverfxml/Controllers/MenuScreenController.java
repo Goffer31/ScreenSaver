@@ -27,7 +27,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -167,16 +166,16 @@ public class MenuScreenController{
          */
         
         if(event.getCode().equals(KeyCode.V)) {
-            patchChooser();
+            pathChooser();
         }
         
         if(event.getCode().equals(KeyCode.Z)) {
-            savePhotoAndDelete(singleFile, patchChooser());
+            savePhotoAndDelete(singleFile, pathChooser());
         }
         
         if(event.getCode().equals(KeyCode.X)) {
             try {
-                savePhotoWithCopy(singleFile, patchChooser());
+                savePhotoWithCopy(singleFile, pathChooser());
             } catch (IOException ex) {
                 Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -198,7 +197,7 @@ public class MenuScreenController{
     }
     
     @FXML
-    public String patchChooser() {
+    public String pathChooser() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select save location");
         if (selectedDirectory == null) {

@@ -12,15 +12,15 @@
       <Button fx:id="returnButton" layoutX="398.0" layoutY="563.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="74.0" text="Return" />
       <Button fx:id="sourceFolderButton" layoutX="184.0" layoutY="22.0" mnemonicParsing="false" text="Choose source folder " />
       <Label fx:id="sourcePathLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="98.0" layoutY="47.0" prefHeight="30.0" prefWidth="304.0" text="Source path" />
-      <Button fx:id="targetFolderButton1" layoutX="174.0" layoutY="110.0" mnemonicParsing="false" text="Choose first target folder " />
+      <Button fx:id="targetFolderButton1" layoutX="174.0" layoutY="110.0" mnemonicParsing="false" onMousePressed="#savePathChooser" text="Choose first target folder " />
       <Label fx:id="targetPathLabel1" alignment="CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="136.0" prefHeight="30.0" prefWidth="304.0" text="First target path" />
       <RadioButton fx:id="copyRadioButton" layoutX="184.0" layoutY="483.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="144.0" text="Copy" />
       <RadioButton fx:id="moveRadioButton" layoutX="184.0" layoutY="526.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="144.0" text="Move" />
-      <Button fx:id="targetFolderButton2" layoutX="166.0" layoutY="205.0" mnemonicParsing="false" text="Choose second target folder " />
+      <Button fx:id="targetFolderButton2" layoutX="166.0" layoutY="205.0" mnemonicParsing="false" onMousePressed="#savePathChooser" text="Choose second target folder " />
       <Label fx:id="targetPathLabel2" alignment="CENTER" contentDisplay="CENTER" layoutX="98.0" layoutY="230.0" prefHeight="30.0" prefWidth="304.0" text="Second target path" />
-      <Button fx:id="targetFolderButton3" layoutX="175.0" layoutY="300.0" mnemonicParsing="false" text="Choose third target folder " />
+      <Button fx:id="targetFolderButton3" layoutX="175.0" layoutY="300.0" mnemonicParsing="false" onMousePressed="#savePathChooser" text="Choose third target folder " />
       <Label fx:id="targetPathLabel3" alignment="CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="325.0" prefHeight="30.0" prefWidth="304.0" text="Third target path" />
-      <Button fx:id="targetFolderButton4" layoutX="168.0" layoutY="390.0" mnemonicParsing="false" text="Choose fourth target folder " />
+      <Button fx:id="targetFolderButton4" layoutX="168.0" layoutY="390.0" mnemonicParsing="false" onMousePressed="#savePathChooser" text="Choose fourth target folder " />
       <Label fx:id="targetPathLabel4" alignment="CENTER" contentDisplay="CENTER" layoutX="98.0" layoutY="415.0" prefHeight="30.0" prefWidth="304.0" text="Fourth target path" />
       <TextField fx:id="keyText1" layoutX="422.0" layoutY="134.0" prefHeight="25.0" prefWidth="55.0" />
       <Label layoutX="406.0" layoutY="113.0" text="Choose first key" />

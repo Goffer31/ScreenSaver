@@ -5,6 +5,7 @@
  */
 package screensaverfxml.Controllers;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -14,6 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
 
 /**
  * FXML Controller class
@@ -60,6 +64,10 @@ public class SettingsScreenController implements Initializable {
     @FXML
     RadioButton moveRadioButton;
     
+    File[] selectedDirectory;
+    
+    int whichIsLastClicked = -1;
+    
     @FXML
     private void RadioButtonsGroup() {
         ToggleGroup radioButtonsTg = new ToggleGroup();
@@ -88,8 +96,36 @@ public class SettingsScreenController implements Initializable {
     }
     
     @FXML
-    public String savePathChooser() {
+    public String savePathChooser(MouseEvent mouseEvent) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select save location");
+
+        targetFolderButton1.setOnAction(e -> whichIsLastClicked = 1);
+        targetFolderButton2.setOnAction(e -> whichIsLastClicked = 2);
+        targetFolderButton3.setOnAction(e -> whichIsLastClicked = 3);
+        targetFolderButton4.setOnAction(e -> whichIsLastClicked = 4);
         
+        
+        switch (whichIsLastClicked) {
+            case 1:
+                selectedDirectory[1] = directoryChooser.showDialog(null);
+                printSavePath(selectedDirectory[1].getAbsolutePath());
+                return selectedDirectory[1].getAbsolutePath();
+            case 2:
+                selectedDirectory[2] = directoryChooser.showDialog(null);
+                printSavePath(selectedDirectory[2].getAbsolutePath());
+                return selectedDirectory[2].getAbsolutePath();
+
+            case 3:
+                selectedDirectory[3] = directoryChooser.showDialog(null);
+                printSavePath(selectedDirectory[3].getAbsolutePath());
+                return selectedDirectory[3].getAbsolutePath();
+
+            case 4:
+                selectedDirectory[4] = directoryChooser.showDialog(null);
+                printSavePath(selectedDirectory[4].getAbsolutePath());
+                return selectedDirectory[4].getAbsolutePath();
+        }
         return null;
     }
     
