@@ -7,6 +7,7 @@ package screensaverfxml.Controllers;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import javafx.event.EventHandler;
@@ -17,9 +18,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -84,14 +88,15 @@ public class SettingsScreenController implements Initializable {
     @FXML
     Button returnButton;
     
-    String[] keyContainer;
     File[] selectedDirectory = new File[4];
     
     int whichIsLastClicked = -1;
     int whichIsLastClicked2 = -1;
     
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
-    private final Scanner scanner = new Scanner(System.in);
+    private final FileChooser fileChooser = new FileChooser();
+    
+    List<File> selectedImgsList;
     
     @FXML
     private void RadioButtonsGroup() {
@@ -192,9 +197,20 @@ public class SettingsScreenController implements Initializable {
             }
         });
     }
+    ////////////////////////////////////////////////////////////
+    /**
+     * TO CONTINUE 
+     */
+    @FXML
+    public void sourceFolderChooser(MouseEvent mouseEvent) {
+        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+            fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
+            selectedImgsList = fileChooser.showOpenMultipleDialog(null);
+        }
+    }
     
     @FXML
-    public void printSavePath(String path, Label label) {
+    private void printSavePath(String path, Label label) {
         System.out.println("Path: " + path);
         System.out.println("Label: " + label);
         label.setText(path);
