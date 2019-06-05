@@ -9,12 +9,16 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
@@ -51,6 +55,9 @@ public class SettingsScreenController implements Initializable {
     Label targetPathLabel2;
     @FXML
     Button keyChooseButton2;
+    String keyContainer2;
+    @FXML
+    Label keyValidation2;
     
     @FXML
     Button targetFolderButton3;
@@ -58,6 +65,9 @@ public class SettingsScreenController implements Initializable {
     Label targetPathLabel3;
     @FXML
     Button keyChooseButton3;
+    String keyContainer3;
+    @FXML
+    Label keyValidation3;
     
     @FXML
     Button targetFolderButton4;
@@ -65,6 +75,9 @@ public class SettingsScreenController implements Initializable {
     Label targetPathLabel4;
     @FXML
     Button keyChooseButton4;
+    String keyContainer4;
+    @FXML
+    Label keyValidation4;
     
     @FXML
     RadioButton copyRadioButton;
@@ -73,6 +86,7 @@ public class SettingsScreenController implements Initializable {
     @FXML
     Button returnButton;
     
+    String[] keyContainer;
     File[] selectedDirectory = new File[4];
     
     int whichIsLastClicked = -1;
@@ -96,11 +110,20 @@ public class SettingsScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         settingsPane.requestFocus();
+
+        /**
+         * Radio button grouping
+         */
         ToggleGroup radioButtonsTg = new ToggleGroup();
         copyRadioButton.setToggleGroup(radioButtonsTg);
         moveRadioButton.setToggleGroup(radioButtonsTg);
         copyRadioButton.setSelected(true);
 
+        //---***---***---***---***---***---***---***---***---***---***---***---*---*
+        
+        /**
+         * Choosing folders to save photos
+         */
         targetFolderButton1.setOnAction(e -> {
             whichIsLastClicked = 0;
             System.out.println("Which is last clicked 0");
@@ -121,14 +144,55 @@ public class SettingsScreenController implements Initializable {
             System.out.println("Which is last clicked 3");
             savePathChooser(null);
         });
+
+        //---***---***---***---***---***---***---***---***---***---***---***---*---*
         
-        keyChooseButton1.setOnAction(ae -> {
-            whichIsLastClicked2 = 0;
-            System.out.println("Which is last clicked key 0");
-            keyChooser(null);
+        /**
+         * Choosing key to save photos
+         */
+        keyChooseButton1.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                keyChooseButton1.setOnAction(ae -> {
+                    whichIsLastClicked2 = 0;
+                    System.out.println("Which is last clicked key 0");
+                    keyChooser(null);
+                });
+            }
         });
-        
-        
+
+        keyChooseButton2.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                keyChooseButton2.setOnAction(ae -> {
+                    whichIsLastClicked2 = 1;
+                    System.out.println("Which is last clicked key 1");
+                    keyChooser(null);
+                });
+            }
+        });
+
+        keyChooseButton3.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                keyChooseButton3.setOnAction(ae -> {
+                    whichIsLastClicked2 = 2;
+                    System.out.println("Which is last clicked key 2");
+                    keyChooser(null);
+                });
+            }
+        });
+
+        keyChooseButton4.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                keyChooseButton4.setOnAction(ae -> {
+                    whichIsLastClicked2 = 3;
+                    System.out.println("Which is last clicked key 3");
+                    keyChooser(null);
+                });
+            }
+        });
     }
     
     @FXML
@@ -169,24 +233,81 @@ public class SettingsScreenController implements Initializable {
     }
     
     @FXML
-    public void keyChooser(MouseEvent mouseEvent) {
-        switch(whichIsLastClicked2) {
-            case 1:
+    public void keyChooser(KeyEvent event) {
+        switch (whichIsLastClicked2) {
+            case 0:
                 System.out.println("Inside keyChooser method");
                 keyChooseButton1.setText("Click save button");
-                keyContainer1 = scanner.nextLine();
-                if(keyContainer1.length() > 1) {
-                    keyValidation1.setText("Too long");
+                
+                if (event == null) {
+                    return;
+                }
+                
+                keyContainer1 = event.getText().toUpperCase().trim();
+                if (keyContainer1.length() > 1 || keyContainer1.length() == 0) {
+                    keyValidation1.setText("Too long or empty");
                 } else {
                     keyValidation1.setText("Confirm");
+                    keyChooseButton1.setText(keyContainer1);
                 }
-                keyChooseButton1.setText(keyContainer1);
+                whichIsLastClicked2 = -1;
+                break;
+
+            case 1:
+                System.out.println("Inside keyChooser method");
+                keyChooseButton2.setText("Click save button");
+                
+                if (event == null) {
+                    return;
+                }
+                
+                System.out.println(event.getText());
+                
+                keyContainer2 = event.getText().toUpperCase().trim();
+                if (keyContainer2.length() > 1 || keyContainer2.length() == 0) {
+                    keyValidation2.setText("Too long or empty");
+                } else {
+                    keyValidation2.setText("Confirm");
+                    keyChooseButton2.setText(keyContainer2);
+                }
+                whichIsLastClicked2 = -1;
+                break;
+                
             case 2:
-            
+                System.out.println("Inside keyChooser method");
+                keyChooseButton3.setText("Click save button");
+
+                if (event == null) {
+                    return;
+                }
+
+                keyContainer3 = event.getText().toUpperCase().trim();
+                if (keyContainer3.length() > 1 || keyContainer3.length() == 0) {
+                    keyValidation3.setText("Too long or empty");
+                } else {
+                    keyValidation3.setText("Confirm");
+                    keyChooseButton3.setText(keyContainer3);
+                }
+                whichIsLastClicked2 = -1;
+                break;
+                
             case 3:
-            
-            case 4:
-        
+                System.out.println("Inside keyChooser method");
+                keyChooseButton4.setText("Click save button");
+
+                if (event == null) {
+                    return;
+                }
+
+                keyContainer4 = event.getText().toUpperCase().trim();
+                if (keyContainer4.length() > 1 || keyContainer4.length() == 0) {
+                    keyValidation4.setText("Too long or empty");
+                } else {
+                    keyValidation4.setText("Confirm");
+                    keyChooseButton4.setText(keyContainer4);
+                }
+                whichIsLastClicked2 = -1;
+                break;
         }
     }
     
