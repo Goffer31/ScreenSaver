@@ -239,15 +239,18 @@ public class MenuScreenController{
     
     @FXML
     MenuItem settingsMenuItem;
+    Stage stage;
     
     @FXML
     public void showSettingsWindow(ActionEvent event) {
         try {
             FXMLLoader fXMLLoader = new FXMLLoader(getClass().getResource("/screensaverfxml/fxmlConfig/SettingsScreen.fxml"));
             Parent root1 = (Parent) fXMLLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Settings");
-            stage.setScene(new Scene(root1));
+            if (stage == null) {
+                stage = new Stage();
+                stage.setTitle("Settings");
+                stage.setScene(new Scene(root1));
+            }
             stage.show();
         } catch (IOException e) {
             System.out.println("Can't load settings window");
@@ -260,6 +263,9 @@ public class MenuScreenController{
     }
 
 }
+
+//Centering image on the window
+//https://stackoverflow.com/questions/20014787/how-do-i-center-an-image-view-in-an-anchor-pane?rq=1
 
 //Creating a settings window
 //https://www.youtube.com/watch?v=5NM27PP5rME
