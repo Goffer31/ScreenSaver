@@ -9,8 +9,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -260,8 +258,6 @@ public class SettingsScreenController implements Initializable {
                 if (event == null) {
                     return;
                 }
-                
-                System.out.println(event.getText());
                 
                 keyContainer2 = event.getText().toUpperCase().trim();
                 if (keyContainer2.length() > 1 || keyContainer2.length() == 0) {
