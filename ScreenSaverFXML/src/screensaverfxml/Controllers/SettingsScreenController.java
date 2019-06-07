@@ -6,10 +6,11 @@
 package screensaverfxml.Controllers;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Paint;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -33,6 +35,12 @@ import javafx.stage.Stage;
  */
 public class SettingsScreenController implements Initializable {
     
+    private MenuScreenController menuScreenController;
+
+    public void setMenuScreenController(MenuScreenController menuScreenController) {
+        this.menuScreenController = menuScreenController;
+    }
+    
     @FXML
     AnchorPane settingsPane;
 
@@ -40,6 +48,8 @@ public class SettingsScreenController implements Initializable {
     Button sourceFolderButton;
     @FXML
     Label sourcePathLabel;
+    @FXML
+    Label countOfSelectedFilesLabel;
     
     @FXML
     Button targetFolderButton1;
@@ -93,10 +103,22 @@ public class SettingsScreenController implements Initializable {
     int whichIsLastClicked = -1;
     int whichIsLastClicked2 = -1;
     
+    ArrayList<String> keyList = new ArrayList<>();
+    ArrayList<String> pathList = new ArrayList<>();
+    
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final FileChooser fileChooser = new FileChooser();
     
     List<File> selectedImgsList;
+
+    public List<File> getSelectedImgsList() {
+        return selectedImgsList;
+    }
+
+    public void setSelectedImgsList(List<File> selectedImgsList) {
+        this.selectedImgsList = selectedImgsList;
+    }
+    
     
     @FXML
     private void RadioButtonsGroup() {
@@ -196,16 +218,39 @@ public class SettingsScreenController implements Initializable {
                 });
             }
         });
+        
+        pathList = new ArrayList<>();
+        for(int i = 0; i < 4; i++) {
+            pathList.add(null);
+        }
+        
     }
-    ////////////////////////////////////////////////////////////
+    
     /**
-     * TO CONTINUE 
+     * Load files and transfer data to MenuScreenController 
      */
+    
     @FXML
-    public void sourceFolderChooser(MouseEvent mouseEvent) {
+    public void sourceFolderChooser(MouseEvent mouseEvent) throws MalformedURLException {
         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
             selectedImgsList = fileChooser.showOpenMultipleDialog(null);
+            
+            menuScreenController.loadImageOnScreen(selectedImgsList);
+            
+            /**
+             * Printing label and count of selected images
+             */
+            
+            String printLabel = selectedImgsList.get(0).toString();
+            int indexOfCut = printLabel.lastIndexOf("\\");
+            if (indexOfCut > 0) {
+                printLabel = printLabel.substring(0, indexOfCut);
+            }
+                printSavePath(printLabel, sourcePathLabel);       
+                          
+            countOfSelectedFilesLabel.setText(String.valueOf(selectedImgsList.size()));
+            countOfSelectedFilesLabel.setTextFill(Paint.valueOf("#1a7a17"));
         }
     }
     
@@ -214,6 +259,7 @@ public class SettingsScreenController implements Initializable {
         System.out.println("Path: " + path);
         System.out.println("Label: " + label);
         label.setText(path);
+        label.setTextFill(Paint.valueOf("#4e0754"));
     } 
     
     @FXML
@@ -244,6 +290,19 @@ public class SettingsScreenController implements Initializable {
                 printSavePath(selectedDirectory[3].getAbsolutePath(), targetPathLabel4);
                 break;
         }
+        
+        for(int i = 0; i < selectedDirectory.length; i++) {
+            if(selectedDirectory[i] != null) {
+                pathList.set(i, selectedDirectory[i].toString());
+            } else { 
+                pathList.set(i, null);
+            }
+        }
+        
+        menuScreenController.pathsGenerator(pathList);
+        
+    
+//    odwołanie do metody pobierającej konwertującej stringa na KeyCode analogicznie do loadImageOnScreen w metodzie SourceFolderChooser
     }
     
     @FXML
@@ -262,6 +321,7 @@ public class SettingsScreenController implements Initializable {
                     keyValidation1.setText("Too long or empty");
                 } else {
                     keyValidation1.setText("Confirm");
+                    keyValidation1.setTextFill(Paint.valueOf("#1a7a17"));
                     keyChooseButton1.setText(keyContainer1);
                 }
                 whichIsLastClicked2 = -1;
@@ -280,6 +340,7 @@ public class SettingsScreenController implements Initializable {
                     keyValidation2.setText("Too long or empty");
                 } else {
                     keyValidation2.setText("Confirm");
+                    keyValidation2.setTextFill(Paint.valueOf("#1a7a17"));
                     keyChooseButton2.setText(keyContainer2);
                 }
                 whichIsLastClicked2 = -1;
@@ -298,6 +359,7 @@ public class SettingsScreenController implements Initializable {
                     keyValidation3.setText("Too long or empty");
                 } else {
                     keyValidation3.setText("Confirm");
+                    keyValidation3.setTextFill(Paint.valueOf("#1a7a17"));
                     keyChooseButton3.setText(keyContainer3);
                 }
                 whichIsLastClicked2 = -1;
@@ -316,17 +378,35 @@ public class SettingsScreenController implements Initializable {
                     keyValidation4.setText("Too long or empty");
                 } else {
                     keyValidation4.setText("Confirm");
+                    keyValidation4.setTextFill(Paint.valueOf("#1a7a17"));
                     keyChooseButton4.setText(keyContainer4);
                 }
                 whichIsLastClicked2 = -1;
                 break;
         }
+        
+        if(keyList.isEmpty()) {
+            keyList.add(keyContainer1);
+            keyList.add(keyContainer2);
+            keyList.add(keyContainer3);
+            keyList.add(keyContainer4);
+        } else {
+            keyList.set(0, keyContainer1);
+            keyList.set(1, keyContainer2);
+            keyList.set(2, keyContainer3);
+            keyList.set(3, keyContainer4);
+        }
+        
+        
+        
+        menuScreenController.stringToKeyCodeGenerator(keyList);
     }
     
     @FXML
     public void exit() {
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.close();
+        menuScreenController.imageViewRequestFocus();
     }
     
     

@@ -11,7 +11,7 @@
    <children>
       <StackPane fx:id="stackImgPane" prefHeight="700.0" prefWidth="1000.0">
          <children>
-            <ImageView fx:id="imgFieldView" fitHeight="700.0" fitWidth="1000.0" onKeyPressed="#getNewImageHandler" onMouseClicked="#imgDoubleClick" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imgFieldView" fitHeight="700.0" fitWidth="1000.0" onKeyPressed="#getNewImageHandler" pickOnBounds="true" preserveRatio="true" />
          </children>
       </StackPane>
       <MenuBar>

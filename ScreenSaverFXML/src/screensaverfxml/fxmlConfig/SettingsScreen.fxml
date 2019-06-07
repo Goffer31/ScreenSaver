@@ -9,7 +9,7 @@
 <AnchorPane id="AnchorPane" fx:id="settingsPane" prefHeight="600.0" prefWidth="497.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.SettingsScreenController">
    <children>
       <Button fx:id="returnButton" layoutX="398.0" layoutY="563.0" mnemonicParsing="false" onAction="#exit" prefHeight="30.0" prefWidth="74.0" text="Return" />
-      <Button fx:id="sourceFolderButton" layoutX="191.0" layoutY="24.0" mnemonicParsing="false" text="Choose source folder " />
+      <Button fx:id="sourceFolderButton" layoutX="191.0" layoutY="24.0" mnemonicParsing="false" onMousePressed="#sourceFolderChooser" text="Choose source folder " />
       <Label fx:id="sourcePathLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="48.0" prefHeight="30.0" prefWidth="304.0" text="Source path" />
       <Button fx:id="targetFolderButton1" layoutX="98.0" layoutY="110.0" mnemonicParsing="false" text="Choose first target folder " />
       <Label fx:id="targetPathLabel1" alignment="CENTER" contentDisplay="CENTER" layoutX="112.0" layoutY="135.0" prefHeight="30.0" prefWidth="304.0" text="First target path" />
@@ -34,5 +34,6 @@
       <Label fx:id="keyValidation2" layoutX="418.0" layoutY="209.0" />
       <Label fx:id="keyValidation3" layoutX="420.0" layoutY="304.0" />
       <Label fx:id="keyValidation4" layoutX="419.0" layoutY="394.0" />
+      <Label fx:id="countOfSelectedFilesLabel" layoutX="347.0" layoutY="28.0" text="Count of selected files" />
    </children>
 </AnchorPane>

@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,12 +26,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -42,19 +40,24 @@ public class MenuScreenController{
     @FXML
     private StackPane stackImgPane;
     @FXML
-    ImageView imgFieldView;
+    private ImageView imgFieldView;
     
     Image image;
     double angleRotation;
     int photoSwipCounter = 0;
 
    private MainScreenController mainScreenController;
+   private SettingsScreenController settingsScreenController;
    
    final FileChooser fileChooser = new FileChooser();   
    
    List<File> selectedImgsList;
     File singleFile;
     File selectedDirectory = null;
+    ArrayList<String> keyCodeStringArrayList;
+    ArrayList<KeyCode> keyCodeArrayList;
+    ArrayList<String> pathTargetArrayList;
+    int copyOrMoveStatusFlag = 1;
    
     
     void setMainController(MainScreenController mainScreenController) {
@@ -62,62 +65,106 @@ public class MenuScreenController{
     }
     
     
-    //Method to make image on the center of the screen
-    public void centerImage(ImageView imgView) {
-        Image img = imgView.getImage();
-        if (img != null) {
-            double imageWidth;
-            double imageHeight;
-            double ratioX = imgView.getFitHeight() / img.getWidth();
-            double ratioY = imgView.getFitWidth() / img.getHeight();
-            double reducCoeff;
-            
-            if (ratioX >= ratioY) {
-                reducCoeff = ratioY;
+//    Method to make image on the center of the screen
+//    public void centerImage(ImageView imgView) {
+//        Image img = imgView.getImage();
+//        if (img != null) {
+//            double imageWidth;
+//            double imageHeight;
+//            double ratioX = imgView.getFitHeight() / img.getWidth();
+//            double ratioY = imgView.getFitWidth() / img.getHeight();
+//            double reducCoeff;
+//            
+//            if (ratioX >= ratioY) {
+//                reducCoeff = ratioY;
+//            } else {
+//                reducCoeff = ratioX;
+//            }
+//            imageWidth = img.getWidth() * reducCoeff;
+//            imageHeight = img.getHeight() * reducCoeff;
+//            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
+//            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+//        }
+//    }
+    
+//    metoda konwertująca pobrane stringi z keyList na KeyCody (w parametrach otrzymuje liste stringów pathList, a zwraca listę KeyCodów)
+    
+    @FXML
+    public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> pathArrayList) {
+        String temporaryString;
+        KeyCode temporaryKeyCode;
+        
+        keyCodeArrayList = new ArrayList<>();
+        
+        for (int i = 0; i < pathArrayList.size(); i++) {
+            temporaryString = pathArrayList.get(i);
+            if (temporaryString != null) {
+                System.out.println("temporaryString: " + temporaryString);
+                temporaryKeyCode = KeyCode.valueOf(temporaryString);
+                keyCodeArrayList.add(temporaryKeyCode);
             } else {
-                reducCoeff = ratioX;
+                keyCodeArrayList.add(null);
             }
-            imageWidth = img.getWidth() * reducCoeff;
-            imageHeight = img.getHeight() * reducCoeff;
-            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+
+            
         }
+        
+        return keyCodeArrayList;
+    }
+
+//    metoda przypisująca pobrane źródła pod zapis zdjęć
+
+    @FXML
+    public ArrayList<String> pathsGenerator(ArrayList<String> pathArrayList) {
+        String temporaryString;
+        
+        pathTargetArrayList = new ArrayList<>();
+        
+        
+        for(int i = 0; i < pathArrayList.size(); i++) {
+            temporaryString = pathArrayList.get(i);
+            if(temporaryString != null) {
+                pathTargetArrayList.add(temporaryString);
+            } else {
+                pathTargetArrayList.add(null);
+            }
+        }
+        
+        return pathTargetArrayList;
     }
     
-    //Select photos from driver by double click on imageView field
+    
     @FXML
-    public void imgDoubleClick(MouseEvent mouseEvent) throws MalformedURLException {
+    public void focusAndLoadFirstImage() throws MalformedURLException {
+        imageViewRequestFocus();
+        selectedImgsList = new ArrayList<>();
+        loadImageOnScreen(selectedImgsList);
+    }
+    
+    @FXML
+    public void pathAndKeyGeneratorInitializer() {
+        keyCodeStringArrayList = new ArrayList<>();
+        stringToKeyCodeGenerator(keyCodeStringArrayList);
+    }
 
-        // image view setting position
-//        centerImage(imgFieldView);
-        // end of image view setting position
-        
-        /**
-         * requestFocus() gives us opportunity to operate on imgFieldView
-         */
+    public void imageViewRequestFocus() {
         imgFieldView.requestFocus();
-        
-        /**
-         * Code responsible for load photos from a driver
-        */
-        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-            if (mouseEvent.getClickCount() == 2) {
-                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
-                selectedImgsList = fileChooser.showOpenMultipleDialog(null);
-                if (selectedImgsList != null) {
-                    singleFile = selectedImgsList.get(0);
-                    image = new Image(singleFile.toURL().toString(),
-                            900, 400,
-                            true, true, true);
-                    imgFieldView.setImage(image);
-                    System.out.println(singleFile.getName());
-                    for (int i = 0; i < selectedImgsList.size(); i++) {
-                        System.out.println(selectedImgsList.get(i).getName());
-                    }
-                } else {
-                    System.out.println("No File Selected");
-                }
+    }
+
+    public void loadImageOnScreen(List<File> selectedImagesList) throws MalformedURLException {
+        this.selectedImgsList = selectedImagesList;
+        if (selectedImagesList != null) {
+            singleFile = selectedImagesList.get(0);
+            image = new Image(singleFile.toURL().toString(),
+                    900, 400,
+                    true, true, true);
+            imgFieldView.setImage(image);
+            System.out.println(singleFile.getName());
+            for (int i = 0; i < selectedImagesList.size(); i++) {
+                System.out.println(selectedImagesList.get(i).getName());
             }
+        } else {
+            System.out.println("No File Selected");
         }
     }
     
@@ -127,16 +174,16 @@ public class MenuScreenController{
         /**
          * Code responsible for switching photos
          */
-        centerImage(imgFieldView);
+//        centerImage(imgFieldView);
         imgFieldView.requestFocus();
         System.out.println(singleFile.getName());
         
-        if (event.getCode().equals(KeyCode.N)) {
+        if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
             photoSwipCounter++;
             System.out.println("N clicked");
         }
 
-        if (event.getCode().equals(KeyCode.P)) {
+        if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.KP_LEFT)) {
             photoSwipCounter--;
             System.out.println("P clicked");
         }
@@ -146,14 +193,14 @@ public class MenuScreenController{
         /**
          * Code responsible for rotate the image
          */
-        if (event.getCode().equals(KeyCode.L)) {
+        if (event.getCode().equals(KeyCode.PERIOD)) {
 
             angleRotation += 90;
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
 
-        if (event.getCode().equals(KeyCode.R)) {
+        if (event.getCode().equals(KeyCode.COMMA)) {
             angleRotation -= 90;
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
@@ -164,6 +211,24 @@ public class MenuScreenController{
          * Code responsible for saving photos into four different locations 
          * wired to key 'Z', key 'V' is responsible for choosing folder for save
          */
+        
+        for (int i = 0; i < keyCodeArrayList.size(); i++) {
+            if(keyCodeArrayList.get(i) == null) {
+                continue;
+            }
+            if (event.getCode().equals(keyCodeArrayList.get(i))) {
+                if (copyOrMoveStatusFlag == 1) {
+                    try {
+                        savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
+                    } catch (IOException ex) {
+                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (copyOrMoveStatusFlag == 2) {
+                    savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+                }
+            }
+        }
         
         if(event.getCode().equals(KeyCode.V)) {
             pathChooser();
@@ -187,6 +252,14 @@ public class MenuScreenController{
             photoSwipCounter = selectedImgsList.size() - 1;
         } else if (photoSwipCounter >= selectedImgsList.size()) {
             photoSwipCounter = 0;
+        }
+        
+        /**
+         * set greybox logo if list is empty
+         */
+        
+        if(selectedImgsList == null) {
+//            singleFile
         }
         singleFile = selectedImgsList.get(photoSwipCounter);
         
@@ -213,8 +286,21 @@ public class MenuScreenController{
         String targetDirectoryString = directory + "\\" + singleFile.getName();
         Path targetDirectory = Paths.get(targetDirectoryString);
         Files.copy(sourceDirectory, targetDirectory);
-        selectedImgsList.get(photoSwipCounter).delete();
-        photoSwipCounter++;
+        
+        ArrayList<File> temporaryArrayList = new ArrayList<>();
+        
+        for(int i = 0; i < selectedImgsList.size(); i++) {
+            if(i == photoSwipCounter) { 
+                continue;
+            }
+            temporaryArrayList.add(selectedImgsList.get(i));
+        }
+        selectedImgsList = temporaryArrayList;
+        
+//        selectedImgsList.get(photoSwipCounter).delete();
+//        selectedImgsList.remove(photoSwipCounter);
+//        selectedImgsList.remove(selectedImgsList.get(photoSwipCounter));
+//        photoSwipCounter++;
         photoSweep();
     }
     
@@ -250,6 +336,8 @@ public class MenuScreenController{
                 stage = new Stage();
                 stage.setTitle("Settings");
                 stage.setScene(new Scene(root1));
+                settingsScreenController = fXMLLoader.getController();
+                settingsScreenController.setMenuScreenController(this);
             }
             stage.show();
         } catch (IOException e) {
