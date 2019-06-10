@@ -5,6 +5,8 @@
  */
 package screensaverfxml.Controllers;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -21,15 +23,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Rotate;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -89,9 +94,13 @@ public class MenuScreenController{
 //            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
 //        }
 //    }
-    
-//    metoda konwertująca pobrane stringi z keyList na KeyCody (w parametrach otrzymuje liste stringów pathList, a zwraca listę KeyCodów)
-    
+     
+     /**
+      * Method generating keyCodes basic on String ArrayList with paths
+      * @param pathArrayList
+      * @return 
+      */
+     
     @FXML
     public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> pathArrayList) {
         String temporaryString;
@@ -115,14 +124,17 @@ public class MenuScreenController{
         return keyCodeArrayList;
     }
 
-//    metoda przypisująca pobrane źródła pod zapis zdjęć
-
+    
+    /**
+     * Method assigns getted sources for photo save
+     * @param pathArrayList
+     * @return 
+     */
     @FXML
     public ArrayList<String> pathsGenerator(ArrayList<String> pathArrayList) {
         String temporaryString;
         
         pathTargetArrayList = new ArrayList<>();
-        
         
         for(int i = 0; i < pathArrayList.size(); i++) {
             temporaryString = pathArrayList.get(i);
@@ -196,8 +208,11 @@ public class MenuScreenController{
         /**
          * Code responsible for rotate the image
          */
-        if (event.getCode().equals(KeyCode.PERIOD)) {
+        
+//        wykorzystac SnapshotsParameters do obracania i metodę imgFieldView.snapshot moze zeby cos pokombinowac 
+//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated?rq=1
 
+        if (event.getCode().equals(KeyCode.PERIOD)) {
             angleRotation += 90;
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
@@ -232,23 +247,27 @@ public class MenuScreenController{
                 }
             }
         }
-        
-//        if(event.getCode().equals(KeyCode.V)) {
-//            pathChooser();
-//        }
-//        
-//        if(event.getCode().equals(KeyCode.Z)) {
-//            savePhotoAndDelete(singleFile, pathChooser());
-//        }
-//        
-//        if(event.getCode().equals(KeyCode.X)) {
-//            try {
-//                savePhotoWithCopy(singleFile, pathChooser());
-//            } catch (IOException ex) {
-//                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
     }
+    
+    @FXML
+    public void imageToFile(Image image) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(singleFile);
+        ImageIO.write(rotateClockwise90(bufferedImage), "jpg", new File(singleFile.getAbsolutePath() + "2"));
+    }
+    
+    public static BufferedImage rotateClockwise90(BufferedImage src) {
+    int width = src.getWidth();
+    int height = src.getHeight();
+
+    BufferedImage dest = new BufferedImage(height, width, src.getType());
+    
+    Graphics2D graphics2D = dest.createGraphics();
+    graphics2D.translate((height - width) / 2, (height - width) / 2);
+    graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
+    graphics2D.drawRenderedImage(src, null);
+
+    return dest;
+}
 
     private void photoSweep() {
         if (photoSwipCounter < 0) {
@@ -260,10 +279,10 @@ public class MenuScreenController{
         /**
          * set greybox logo if list is empty
          */
-        
         if(selectedImgsList == null) {
 //            singleFile
         }
+        
         singleFile = selectedImgsList.get(photoSwipCounter);
         
         image = new Image(singleFile.toURI().toString(),
@@ -287,6 +306,7 @@ public class MenuScreenController{
     private void savePhotoWithCopy(File singleFile, String directory) throws IOException {
         Path sourceDirectory = Paths.get(singleFile.getAbsolutePath());
         String targetDirectoryString = directory + "\\" + singleFile.getName();
+        imageToFile(imgFieldView.getImage());
         Path targetDirectory = Paths.get(targetDirectoryString);
         Files.copy(sourceDirectory, targetDirectory);
         
@@ -300,6 +320,8 @@ public class MenuScreenController{
         }
         selectedImgsList = temporaryArrayList;
         
+        
+        
         photoSweep();
     }
     
@@ -312,10 +334,6 @@ public class MenuScreenController{
         photoSwipCounter++;
         photoSweep();
     }
-    
-    
-    
-    
 
     //---***---***---***---***---***---***---***---***---***---***---***---*---*
     /**
