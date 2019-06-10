@@ -6,18 +6,24 @@
 package screensaverfxml.Controllers;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -119,16 +125,27 @@ public class SettingsScreenController implements Initializable {
         this.selectedImgsList = selectedImgsList;
     }
     
+    /**
+     * Method RadioButtonsGroup() is responsible for grouping the radioButtons together, after that set copyButton selected at the begining and logic setting flag responsible for choosing between copying and moveing
+     */
     
-    @FXML
+     @FXML
     private void RadioButtonsGroup() {
         ToggleGroup radioButtonsTg = new ToggleGroup();
         copyRadioButton.setToggleGroup(radioButtonsTg);
         moveRadioButton.setToggleGroup(radioButtonsTg);
-        
-        radioButtonsTg.selectedToggleProperty().addListener((observable, oldValue, newValue) -> { if(radioButtonsTg.getSelectedToggle() != null) {
-            copyRadioButton.setSelected(true);
-        }
+        copyRadioButton.setSelected(true);
+
+        radioButtonsTg.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                if (copyRadioButton.isSelected()) {
+                    menuScreenController.setCopyOrMoveStatusFlag(1);
+                }
+                if (moveRadioButton.isSelected()) {
+                    menuScreenController.setCopyOrMoveStatusFlag(2);
+                }
+            }
         });
     }
     
@@ -137,12 +154,16 @@ public class SettingsScreenController implements Initializable {
         settingsPane.requestFocus();
 
         /**
-         * Radio button grouping
+         * Radio button graphic settings and initialize method RadioButtonsGruup(); responsible for group buttons together and logic backend setting falg
          */
-        ToggleGroup radioButtonsTg = new ToggleGroup();
-        copyRadioButton.setToggleGroup(radioButtonsTg);
-        moveRadioButton.setToggleGroup(radioButtonsTg);
-        copyRadioButton.setSelected(true);
+        InputStream copyStream = getClass().getResourceAsStream("/resourcePackage/copy.png");
+        InputStream moveStream = getClass().getResourceAsStream("/resourcePackage/move.png");
+        Image copyImg = new Image(copyStream);
+        Image moveImg = new Image(moveStream);
+        copyRadioButton.setGraphic(new ImageView(copyImg));
+        moveRadioButton.setGraphic(new ImageView(moveImg));
+
+        RadioButtonsGroup();
 
         //---***---***---***---***---***---***---***---***---***---***---***---*---*
         

@@ -58,10 +58,13 @@ public class MenuScreenController{
     ArrayList<KeyCode> keyCodeArrayList;
     ArrayList<String> pathTargetArrayList;
     int copyOrMoveStatusFlag = 1;
-   
     
     void setMainController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
+    }
+    
+     public void setCopyOrMoveStatusFlag(int copyOrMoveStatusFlag) {
+        this.copyOrMoveStatusFlag = copyOrMoveStatusFlag;
     }
     
     
@@ -208,8 +211,8 @@ public class MenuScreenController{
         //---***---***---***---***---***---***---***---***---***---***---***---*
         
         /**
-         * Code responsible for saving photos into four different locations 
-         * wired to key 'Z', key 'V' is responsible for choosing folder for save
+         * Code responsible for saving photos into max four different locations 
+         * using customize keyCode to write folders under buttons
          */
         
         for (int i = 0; i < keyCodeArrayList.size(); i++) {
@@ -230,21 +233,21 @@ public class MenuScreenController{
             }
         }
         
-        if(event.getCode().equals(KeyCode.V)) {
-            pathChooser();
-        }
-        
-        if(event.getCode().equals(KeyCode.Z)) {
-            savePhotoAndDelete(singleFile, pathChooser());
-        }
-        
-        if(event.getCode().equals(KeyCode.X)) {
-            try {
-                savePhotoWithCopy(singleFile, pathChooser());
-            } catch (IOException ex) {
-                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if(event.getCode().equals(KeyCode.V)) {
+//            pathChooser();
+//        }
+//        
+//        if(event.getCode().equals(KeyCode.Z)) {
+//            savePhotoAndDelete(singleFile, pathChooser());
+//        }
+//        
+//        if(event.getCode().equals(KeyCode.X)) {
+//            try {
+//                savePhotoWithCopy(singleFile, pathChooser());
+//            } catch (IOException ex) {
+//                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
 
     private void photoSweep() {
@@ -297,10 +300,6 @@ public class MenuScreenController{
         }
         selectedImgsList = temporaryArrayList;
         
-//        selectedImgsList.get(photoSwipCounter).delete();
-//        selectedImgsList.remove(photoSwipCounter);
-//        selectedImgsList.remove(selectedImgsList.get(photoSwipCounter));
-//        photoSwipCounter++;
         photoSweep();
     }
     
