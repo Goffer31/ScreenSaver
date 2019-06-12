@@ -74,26 +74,29 @@ public class MenuScreenController{
     
     
 //    Method to make image on the center of the screen
-//    public void centerImage(ImageView imgView) {
-//        Image img = imgView.getImage();
-//        if (img != null) {
-//            double imageWidth;
-//            double imageHeight;
-//            double ratioX = imgView.getFitHeight() / img.getWidth();
-//            double ratioY = imgView.getFitWidth() / img.getHeight();
-//            double reducCoeff;
-//            
-//            if (ratioX >= ratioY) {
-//                reducCoeff = ratioY;
-//            } else {
-//                reducCoeff = ratioX;
-//            }
-//            imageWidth = img.getWidth() * reducCoeff;
-//            imageHeight = img.getHeight() * reducCoeff;
-//            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-//            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
-//        }
-//    }
+    public void centerImage(ImageView imgView) {
+        Image img = imgView.getImage();
+        if (img != null) {
+            double imageWidth;
+            double imageHeight;
+            double ratioX = imgView.getFitHeight() / img.getWidth();
+            double ratioY = imgView.getFitWidth() / img.getHeight();
+            double reducCoeff;
+
+            if (ratioX >= ratioY) {
+                reducCoeff = ratioY;
+            } else {
+                reducCoeff = ratioX;
+            }
+
+            imageWidth = img.getWidth() * reducCoeff;
+            imageHeight = img.getHeight() * reducCoeff;
+            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
+            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
+            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
+        }
+    }
      
      /**
       * Method generating keyCodes basic on String ArrayList with paths
@@ -189,18 +192,15 @@ public class MenuScreenController{
         /**
          * Code responsible for switching photos
          */
-//        centerImage(imgFieldView);
         imgFieldView.requestFocus();
         System.out.println(singleFile.getName());
         
         if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
             photoSwipCounter++;
-            System.out.println("N clicked");
         }
 
         if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.KP_LEFT)) {
             photoSwipCounter--;
-            System.out.println("P clicked");
         }
         
         photoSweep();
@@ -247,6 +247,8 @@ public class MenuScreenController{
                 }
             }
         }
+        //        centerImage(imgFieldView);
+
     }
     
     @FXML
