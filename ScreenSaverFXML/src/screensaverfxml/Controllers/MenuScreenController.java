@@ -33,6 +33,9 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 
 /**
  *
@@ -48,6 +51,7 @@ public class MenuScreenController{
     Image image;
     double angleRotation;
     int photoSwipCounter = 0;
+    int rotationsCounter = 0;
 
    private MainScreenController mainScreenController;
    private SettingsScreenController settingsScreenController;
@@ -72,29 +76,29 @@ public class MenuScreenController{
     
     
 //    Method to make image on the center of the screen
-    public void centerImage(ImageView imgView) {
-        Image img = imgView.getImage();
-        if (img != null) {
-            double imageWidth;
-            double imageHeight;
-            double ratioX = imgView.getFitHeight() / img.getWidth();
-            double ratioY = imgView.getFitWidth() / img.getHeight();
-            double reducCoeff;
-            
-            if (ratioX >= ratioY) {
-                reducCoeff = ratioY;
-            } else {
-                reducCoeff = ratioX;
-            }
-            
-            imageWidth = img.getWidth() * reducCoeff;
-            imageHeight = img.getHeight() * reducCoeff;
-            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
-            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
-            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
-        }
-    }
+//    public void centerImage(ImageView imgView) {
+//        Image img = imgView.getImage();
+//        if (img != null) {
+//            double imageWidth;
+//            double imageHeight;
+//            double ratioX = imgView.getFitHeight() / img.getWidth();
+//            double ratioY = imgView.getFitWidth() / img.getHeight();
+//            double reducCoeff;
+//            
+//            if (ratioX >= ratioY) {
+//                reducCoeff = ratioY;
+//            } else {
+//                reducCoeff = ratioX;
+//            }
+//            
+//            imageWidth = img.getWidth() * reducCoeff;
+//            imageHeight = img.getHeight() * reducCoeff;
+//            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
+//            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+//            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
+//            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
+//        }
+//    }
      
      /**
       * Method generating keyCodes basic on String ArrayList with paths
@@ -212,12 +216,15 @@ public class MenuScreenController{
 
         if (event.getCode().equals(KeyCode.PERIOD)) {
             angleRotation += 90;
+//            rotationsCounter++;
+//            imgFieldView.setRotate(angleRotation);
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
 
         if (event.getCode().equals(KeyCode.COMMA)) {
             angleRotation -= 90;
+//            rotationsCounter--;            
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
@@ -253,9 +260,27 @@ public class MenuScreenController{
     @FXML
     public void imageToFile(Image image) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(singleFile);
-        ImageIO.write(rotateClockwise90(bufferedImage), "jpg", new File(singleFile.getAbsolutePath() + "2"));
+        
+        while(angleRotation < 0 || angleRotation >= 360) {
+            if(angleRotation < 0) {
+                angleRotation += 360;
+            } else {
+                angleRotation -= 360;
+            }
+        }
+        
+        int temporaryInt = (int) angleRotation / 90;
+
+        for (int i = 0; i < temporaryInt; i++) {
+            bufferedImage = rotateClockwise90(bufferedImage);
+        }
+        
+        ImageIO.write(bufferedImage, "png", new File(singleFile.getAbsolutePath()));
+        
+        
     }
     
+   
     public static BufferedImage rotateClockwise90(BufferedImage src) {
     int width = src.getWidth();
     int height = src.getHeight();
@@ -305,12 +330,11 @@ public class MenuScreenController{
     
     @FXML
     private void savePhotoWithCopy(File singleFile, String directory) throws IOException {
+        imageToFile(imgFieldView.getImage());
         Path sourceDirectory = Paths.get(singleFile.getAbsolutePath());
         String targetDirectoryString = directory + "\\" + singleFile.getName();
-        imageToFile(imgFieldView.getImage());
         Path targetDirectory = Paths.get(targetDirectoryString);
         Files.copy(sourceDirectory, targetDirectory);
-        
         ArrayList<File> temporaryArrayList = new ArrayList<>();
         
         for(int i = 0; i < selectedImgsList.size(); i++) {
@@ -321,16 +345,28 @@ public class MenuScreenController{
         }
         selectedImgsList = temporaryArrayList;
         
+        angleRotation = 0;
+        imgFieldView.setRotate(angleRotation);
+
         photoSweep();
     }
     
     @FXML
     public void savePhotoAndDelete(File singleFile, String directory) {
+        try {
+            imageToFile(imgFieldView.getImage());
+        } catch (IOException ex) {
+            Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
         System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
         singleFile.renameTo(new File(fileNameAndPathToSave));
         selectedImgsList.get(photoSwipCounter).delete();
         photoSwipCounter++;
+
+        angleRotation = 0;
+        imgFieldView.setRotate(angleRotation);
+
         photoSweep();
     }
 
