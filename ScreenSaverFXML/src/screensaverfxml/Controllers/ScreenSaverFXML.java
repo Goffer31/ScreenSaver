@@ -25,8 +25,10 @@ public class ScreenSaverFXML extends Application {
 //        scene.getStylesheets().add(getClass().getResource("mainStyleSheet.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Screen Saver");
-        
+//        primaryStage.setFullScreen(true);
         primaryStage.show();
+        
+       scene.getRoot().requestFocus();
     }
 
     /**
