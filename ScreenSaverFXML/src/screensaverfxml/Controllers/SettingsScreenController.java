@@ -245,14 +245,11 @@ public class SettingsScreenController implements Initializable {
         for(int i = 0; i < 4; i++) {
             pathList.add(null);
         }
-        
     }
 
-    
     /**
      * Load files and transfer data to MenuScreenController 
      */
-    
     @FXML
     public void sourceFolderChooser(MouseEvent mouseEvent) throws MalformedURLException {
         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
@@ -323,11 +320,12 @@ public class SettingsScreenController implements Initializable {
         }
         
         menuScreenController.pathsGenerator(pathList);
-        
-    
-//    odwołanie do metody pobierającej konwertującej stringa na KeyCode analogicznie do loadImageOnScreen w metodzie SourceFolderChooser
     }
     
+    /**
+     * keyChooser method is reponsible for get letter after click on button in settings
+     * @param event 
+     */
     @FXML
     public void keyChooser(KeyEvent event) {
         switch (whichIsLastClicked2) {
@@ -398,7 +396,6 @@ public class SettingsScreenController implements Initializable {
                 System.out.println("Inside keyChooser method");
                 keyChooseButton4.setText("Click save button");
 
-                
                 if (cancelationOfListening(event, keyContainer4, keyValidation4, keyChooseButton4)) break;
 
                 if (event == null) {
@@ -432,7 +429,15 @@ public class SettingsScreenController implements Initializable {
         menuScreenController.stringToKeyCodeGenerator(keyList);
     }
 
-
+    
+    /**
+     * calcelationOfListening is reponsible for cancel of listening in keyChooser method, before we choose key to connect with path, after click ESCAPE.
+     * @param event
+     * @param containerLabel
+     * @param validationLabel
+     * @param keyChooseButton
+     * @return 
+     */    
     private boolean cancelationOfListening(KeyEvent event, String containerLabel, Label validationLabel, Button keyChooseButton) {
         if (event.getCode().equals(KeyCode.ESCAPE)) {
             event.consume();
@@ -446,26 +451,12 @@ public class SettingsScreenController implements Initializable {
         return false;
     }
     
-//    private boolean cancelationOfListening(KeyEvent event) {
-//        if (event.getCode().equals(KeyCode.ESCAPE)) {
-//            event.consume();
-//            keyContainer4 = null;
-//            keyValidation4.setText(null);
-//            keyChooseButton4.setText("Click to choose fourth key");
-//            System.out.println("CancelationOfListening");
-//            whichIsLastClicked2 = -1;
-//            return true;
-//        }
-//        return false;
-//    }
-       
-    
     @FXML
     public void exit() {
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.close();
         menuScreenController.imageViewRequestFocus();
     }
-    
+
     
 }

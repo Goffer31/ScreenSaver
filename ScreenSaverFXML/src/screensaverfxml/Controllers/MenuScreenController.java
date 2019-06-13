@@ -206,21 +206,14 @@ public class MenuScreenController{
         /**
          * Code responsible for rotate the image
          */
-        
-//        wykorzystac SnapshotsParameters do obracania i metodę imgFieldView.snapshot moze zeby cos pokombinowac 
-//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated?rq=1
-
         if (event.getCode().equals(KeyCode.PERIOD)) {
             angleRotation += 90;
-//            rotationsCounter++;
-//            imgFieldView.setRotate(angleRotation);
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
 
         if (event.getCode().equals(KeyCode.COMMA)) {
-            angleRotation -= 90;
-//            rotationsCounter--;            
+            angleRotation -= 90;         
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
@@ -230,7 +223,6 @@ public class MenuScreenController{
          * Code responsible for saving photos into max four different locations 
          * using customize keyCode to write folders under buttons
          */
-        
         for (int i = 0; i < keyCodeArrayList.size(); i++) {
             if(keyCodeArrayList.get(i) == null) {
                 continue;
@@ -272,8 +264,6 @@ public class MenuScreenController{
         }
         
         ImageIO.write(bufferedImage, "png", new File(singleFile.getAbsolutePath()));
-        
-        
     }
     
    
@@ -301,8 +291,9 @@ public class MenuScreenController{
         /**
          * set greybox logo if list is empty
          */
-        if(selectedImgsList == null) {
-//            singleFile
+        if(selectedImgsList.isEmpty()) {
+            Image emptyListImage = new Image("/resourcePackage/greybox.png");
+            imgFieldView.setImage(emptyListImage);
         }
         
         singleFile = selectedImgsList.get(photoSwipCounter);
@@ -323,7 +314,7 @@ public class MenuScreenController{
         System.out.println("Directory choosed: " + selectedDirectory.getAbsolutePath());
         return selectedDirectory.getAbsolutePath();
     }
-    
+   
     @FXML
     private void savePhotoWithCopy(File singleFile, String directory) throws IOException {
         imageToFile(imgFieldView.getImage());
@@ -435,5 +426,3 @@ public class MenuScreenController{
 
 //Visual side
 //https://www.youtube.com/watch?v=1myTZQowNZw
-
-
