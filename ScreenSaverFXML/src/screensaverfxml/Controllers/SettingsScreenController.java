@@ -335,6 +335,8 @@ public class SettingsScreenController implements Initializable {
                 System.out.println("Inside keyChooser method");
                 keyChooseButton1.setText("Click save button");
                 
+                if (cancelationOfListening(event, keyContainer1, keyValidation1, keyChooseButton1)) break;
+                
                 if (event == null) {
                     return;
                 }
@@ -354,6 +356,8 @@ public class SettingsScreenController implements Initializable {
                 System.out.println("Inside keyChooser method");
                 keyChooseButton2.setText("Click save button");
                 
+                if (cancelationOfListening(event, keyContainer2, keyValidation2, keyChooseButton2)) break;
+                
                 if (event == null) {
                     return;
                 }
@@ -372,6 +376,8 @@ public class SettingsScreenController implements Initializable {
             case 2:
                 System.out.println("Inside keyChooser method");
                 keyChooseButton3.setText("Click save button");
+                
+                if (cancelationOfListening(event, keyContainer3, keyValidation3, keyChooseButton3)) break;
 
                 if (event == null) {
                     return;
@@ -393,7 +399,7 @@ public class SettingsScreenController implements Initializable {
                 keyChooseButton4.setText("Click save button");
 
                 
-                if (cancelationOfListening(event)) break;
+                if (cancelationOfListening(event, keyContainer4, keyValidation4, keyChooseButton4)) break;
 
                 if (event == null) {
                     return;
@@ -427,12 +433,12 @@ public class SettingsScreenController implements Initializable {
     }
 
 
-    private boolean cancelationOfListening(KeyEvent event, Label containerLabel, Label validationLabel, Button keyChooseButton) {
+    private boolean cancelationOfListening(KeyEvent event, String containerLabel, Label validationLabel, Button keyChooseButton) {
         if (event.getCode().equals(KeyCode.ESCAPE)) {
             event.consume();
-            keyContainer4 = null;
-            keyValidation4.setText(null);
-            keyChooseButton4.setText("Click to choose fourth key");
+            containerLabel = null;
+            validationLabel.setText(null);
+            keyChooseButton.setText("Click to choose key");
             System.out.println("CancelationOfListening");
             whichIsLastClicked2 = -1;
             return true;
