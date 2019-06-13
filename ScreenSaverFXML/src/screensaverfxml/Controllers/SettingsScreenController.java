@@ -24,6 +24,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -246,6 +247,7 @@ public class SettingsScreenController implements Initializable {
         }
         
     }
+
     
     /**
      * Load files and transfer data to MenuScreenController 
@@ -390,6 +392,9 @@ public class SettingsScreenController implements Initializable {
                 System.out.println("Inside keyChooser method");
                 keyChooseButton4.setText("Click save button");
 
+                
+                if (cancelationOfListening(event)) break;
+
                 if (event == null) {
                     return;
                 }
@@ -417,11 +422,37 @@ public class SettingsScreenController implements Initializable {
             keyList.set(2, keyContainer3);
             keyList.set(3, keyContainer4);
         }
-        
-        
-        
+
         menuScreenController.stringToKeyCodeGenerator(keyList);
     }
+
+
+    private boolean cancelationOfListening(KeyEvent event, Label containerLabel, Label validationLabel, Button keyChooseButton) {
+        if (event.getCode().equals(KeyCode.ESCAPE)) {
+            event.consume();
+            keyContainer4 = null;
+            keyValidation4.setText(null);
+            keyChooseButton4.setText("Click to choose fourth key");
+            System.out.println("CancelationOfListening");
+            whichIsLastClicked2 = -1;
+            return true;
+        }
+        return false;
+    }
+    
+//    private boolean cancelationOfListening(KeyEvent event) {
+//        if (event.getCode().equals(KeyCode.ESCAPE)) {
+//            event.consume();
+//            keyContainer4 = null;
+//            keyValidation4.setText(null);
+//            keyChooseButton4.setText("Click to choose fourth key");
+//            System.out.println("CancelationOfListening");
+//            whichIsLastClicked2 = -1;
+//            return true;
+//        }
+//        return false;
+//    }
+       
     
     @FXML
     public void exit() {

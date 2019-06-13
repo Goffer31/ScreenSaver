@@ -33,9 +33,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
 
 /**
  *
@@ -102,28 +99,27 @@ public class MenuScreenController{
      
      /**
       * Method generating keyCodes basic on String ArrayList with paths
-      * @param pathArrayList
+      * @param stringKeyArrayList
       * @return 
       */
      
+     
     @FXML
-    public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> pathArrayList) {
+    public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> stringKeyArrayList) {
         String temporaryString;
         KeyCode temporaryKeyCode;
         
         keyCodeArrayList = new ArrayList<>();
         
-        for (int i = 0; i < pathArrayList.size(); i++) {
-            temporaryString = pathArrayList.get(i);
+        for (int i = 0; i < stringKeyArrayList.size(); i++) {
+            temporaryString = stringKeyArrayList.get(i);
             if (temporaryString != null) {
                 System.out.println("temporaryString: " + temporaryString);
                 temporaryKeyCode = KeyCode.valueOf(temporaryString);
                 keyCodeArrayList.add(temporaryKeyCode);
             } else {
                 keyCodeArrayList.add(null);
-            }
-
-            
+            }            
         }
         
         return keyCodeArrayList;
