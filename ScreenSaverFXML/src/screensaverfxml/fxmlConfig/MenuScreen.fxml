@@ -5,15 +5,10 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
 
 <Pane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.MenuScreenController">
    <children>
-      <StackPane fx:id="stackImgPane" prefHeight="700.0" prefWidth="1000.0">
-         <children>
-            <ImageView fx:id="imgFieldView" fitHeight="700.0" fitWidth="1000.0" onKeyPressed="#getNewImageHandler" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </StackPane>
+       <ImageView fx:id="imgFieldView" fitHeight="500.0" fitWidth="500.0" layoutX="250.0" layoutY="100.0" onKeyPressed="#getNewImageHandler" pickOnBounds="true" preserveRatio="true" />
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">
@@ -29,14 +24,5 @@
           </Menu>
         </menus>
       </MenuBar>
-<!--      <Button fx:id="rightButton" layoutX="238.0" layoutY="576.0" mnemonicParsing="false" text="Crtl + VK_RIGHT" />
-      <Button fx:id="leftButton" layoutX="73.0" layoutY="576.0" mnemonicParsing="false" text="Crtl + VK_LEFT" />
-      <Button fx:id="upButton" layoutX="164.0" layoutY="529.0" mnemonicParsing="false" text="Crtl + VK_UP" />
-      <Button fx:id="downButton" layoutX="153.0" layoutY="619.0" mnemonicParsing="false" text="Crtl + VK_DOWN" />
-      <Button fx:id="exit" layoutX="882.0" layoutY="632.0" mnemonicParsing="false" onAction="#exit" prefHeight="37.0" prefWidth="84.0" text="Exit" />
-      <ListView fx:id="listView" layoutX="652.0" layoutY="530.0" prefHeight="159.0" prefWidth="200.0" />-->
-<!--      <Label fx:id="countLabel" layoutX="652.0" layoutY="489.0" prefHeight="25.0" prefWidth="200.0" text="x / y" />
-      <Label fx:id="photoSaveStatusLabel" layoutX="442.0" layoutY="580.0" prefHeight="25.0" prefWidth="149.0" text="Photo saved" />
-      <Label fx:id="photoNameLabel" layoutX="442.0" layoutY="533.0" prefHeight="25.0" prefWidth="149.0" text="Photo name" />-->
    </children>
 </Pane>

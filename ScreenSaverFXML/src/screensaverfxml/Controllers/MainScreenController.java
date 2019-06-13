@@ -8,7 +8,10 @@ package screensaverfxml.Controllers;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -19,11 +22,16 @@ public class MainScreenController {
     
     @FXML
     private Pane mainPane;
+    Stage stage;
+    MenuScreenController menuScreenController;
     
     private void loadMenuScreen() throws IOException {
        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MenuScreen.fxml"));
        Pane menuPane = loader.load();
-       MenuScreenController menuScreenController = loader.getController();
+//       menuPane.getStylesheets().add(getClass().getResource("/styles/StyleSheet.css").toExternalForm());
+//        ("/styles/StyleSheet.css");
+       
+       menuScreenController = loader.getController();
        menuScreenController.setMainController(this);
        setScreen(menuPane);
     }

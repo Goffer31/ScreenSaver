@@ -31,10 +31,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
 
 /**
@@ -44,9 +45,9 @@ import javax.imageio.ImageIO;
 public class MenuScreenController implements Initializable{
  
     @FXML
-    private StackPane stackImgPane;
-    @FXML
     private ImageView imgFieldView;
+    @FXML
+    private Pane menuPane;
     
     Image image;
     double angleRotation;
@@ -76,27 +77,69 @@ public class MenuScreenController implements Initializable{
     
     
 //    Method to make image on the center of the screen
-//    public void centerImage(ImageView imgView) {
-//        Image img = imgView.getImage();
+    public void centerImage(ImageView imgView) {
+        Image img = imgView.getImage();
+        if (img != null) {
+            double imageWidth;
+            double imageHeight;
+            double ratioX = imgView.getFitHeight() / img.getWidth();
+            double ratioY = imgView.getFitWidth() / img.getHeight();
+            double reducCoeff;
+            
+            if (ratioX >= ratioY) {
+                reducCoeff = ratioY;
+            } else {
+                reducCoeff = ratioX;
+            }
+            
+            imageWidth = img.getWidth() * reducCoeff;
+            imageHeight = img.getHeight() * reducCoeff;
+            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
+            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
+            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
+        }
+    }
+    
+    public void centerImage2(ImageView imageView) {
+        Image img = imgFieldView.getImage();
+        double imgHeight = img.getHeight();
+        double imgWidth = img.getWidth();
+        double imgFieldViewHeight = imgFieldView.getFitHeight();
+        double imgFieldViewWidth = imgFieldView.getFitWidth();
+        double menuPaneHeight = menuPane.getPrefHeight();
+        double menuPaneWidth = menuPane.getPrefWidth();
+        
+        imgFieldView.setX((menuPaneWidth - imgFieldViewWidth)/2);
+        imgFieldView.setY((menuPaneHeight - imgFieldViewHeight)/2);
+        img.getRequestedHeight();
+        img.getRequestedWidth();
+        
+        
+    }
+     
+     
+//     public void centerImage() {
+//        Image img = imgFieldView.getImage();
 //        if (img != null) {
-//            double imageWidth;
-//            double imageHeight;
-//            double ratioX = imgView.getFitHeight() / img.getWidth();
-//            double ratioY = imgView.getFitWidth() / img.getHeight();
-//            double reducCoeff;
-//            
-//            if (ratioX >= ratioY) {
+//            double w = 0;
+//            double h = 0;
+//
+//            double ratioX = imgFieldView.getFitWidth() / img.getWidth();
+//            double ratioY = imgFieldView.getFitHeight() / img.getHeight();
+//
+//            double reducCoeff = 0;
+//            if(ratioX >= ratioY) {
 //                reducCoeff = ratioY;
 //            } else {
 //                reducCoeff = ratioX;
 //            }
-//            
-//            imageWidth = img.getWidth() * reducCoeff;
-//            imageHeight = img.getHeight() * reducCoeff;
-//            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-//            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
-//            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
-//            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
+//
+//            w = img.getWidth() * reducCoeff;
+//            h = img.getHeight() * reducCoeff;
+//
+//            imgFieldView.setX((imgFieldView.getFitWidth() - w) / 2);
+//            imgFieldView.setY((imgFieldView.getFitHeight() - h) / 2);
 //        }
 //    }
      
@@ -104,6 +147,9 @@ public class MenuScreenController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         Image startAppImage = new Image("/resourcePackage/greybox.png");
         imgFieldView.setImage(startAppImage);
+        
+        
+//            centerImage2(imgFieldView);
     }
      
      /**
@@ -178,10 +224,11 @@ public class MenuScreenController implements Initializable{
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
             singleFile = selectedImagesList.get(0);
-            image = new Image(singleFile.toURL().toString(),
-                    900, 400,
-                    true, true, true);
+            image = new Image(singleFile.toURL().toString());
             imgFieldView.setImage(image);
+//            image = new Image(singleFile.toURL().toString(),
+//                    900, 400,
+//                    true, true, true);
             System.out.println(singleFile.getName());
             for (int i = 0; i < selectedImagesList.size(); i++) {
                 System.out.println(selectedImagesList.get(i).getName());
@@ -315,9 +362,10 @@ public class MenuScreenController implements Initializable{
         
         singleFile = selectedImgsList.get(photoSwipCounter);
         
-        image = new Image(singleFile.toURI().toString(),
-                900, 400,
-                true, true, true);
+        image = new Image(singleFile.toURI().toString());
+//        image = new Image(singleFile.toURI().toString(),
+//                900, 400,
+//                true, true, true);
         imgFieldView.setImage(image);
     }
     
@@ -402,6 +450,7 @@ public class MenuScreenController implements Initializable{
                 stage = new Stage();
                 stage.setTitle("Settings");
                 stage.setScene(new Scene(root1));
+                stage.initStyle(StageStyle.UNDECORATED);
                 settingsScreenController = fXMLLoader.getController();
                 settingsScreenController.setMenuScreenController(this);
             }
