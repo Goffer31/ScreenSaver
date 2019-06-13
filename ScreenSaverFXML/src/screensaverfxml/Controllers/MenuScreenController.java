@@ -10,17 +10,20 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
@@ -38,7 +41,7 @@ import javax.imageio.ImageIO;
  *
  * @author root
  */
-public class MenuScreenController{
+public class MenuScreenController implements Initializable{
  
     @FXML
     private StackPane stackImgPane;
@@ -97,13 +100,17 @@ public class MenuScreenController{
 //        }
 //    }
      
+        @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Image startAppImage = new Image("/resourcePackage/greybox.png");
+        imgFieldView.setImage(startAppImage);
+    }
+     
      /**
       * Method generating keyCodes basic on String ArrayList with paths
       * @param stringKeyArrayList
       * @return 
       */
-     
-     
     @FXML
     public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> stringKeyArrayList) {
         String temporaryString;
@@ -191,6 +198,16 @@ public class MenuScreenController{
          * Code responsible for switching photos
          */
         imgFieldView.requestFocus();
+        
+        //////////
+        
+//        Image openAppImage = imgFieldView.getImage();
+//        if(openAppImage == null) {
+//            openAppImage = new Image("/resourcePackage/move.png");
+//            imgFieldView.setImage(openAppImage);
+//        }
+        
+        ////////
         System.out.println(singleFile.getName());
         
         if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
@@ -322,8 +339,8 @@ public class MenuScreenController{
         String targetDirectoryString = directory + "\\" + singleFile.getName();
         Path targetDirectory = Paths.get(targetDirectoryString);
         Files.copy(sourceDirectory, targetDirectory);
-        ArrayList<File> temporaryArrayList = new ArrayList<>();
         
+        ArrayList<File> temporaryArrayList = new ArrayList<>();
         for(int i = 0; i < selectedImgsList.size(); i++) {
             if(i == photoSwipCounter) { 
                 continue;
@@ -348,8 +365,18 @@ public class MenuScreenController{
         String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
         System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
         singleFile.renameTo(new File(fileNameAndPathToSave));
-        selectedImgsList.get(photoSwipCounter).delete();
-        photoSwipCounter++;
+//        selectedImgsList.get(photoSwipCounter).delete();
+//        photoSwipCounter++;
+        ////
+        ArrayList<File> temporaryArrayList = new ArrayList<>();
+        for(int i = 0; i < selectedImgsList.size(); i++) {
+            if(i == photoSwipCounter) { 
+                continue;
+            }
+            temporaryArrayList.add(selectedImgsList.get(i));
+        }
+        selectedImgsList = temporaryArrayList;
+        ////
 
         angleRotation = 0;
         imgFieldView.setRotate(angleRotation);
@@ -388,6 +415,8 @@ public class MenuScreenController{
     public void exit() {
         Platform.exit();
     }
+
+
 
 }
 
