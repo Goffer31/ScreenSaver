@@ -20,6 +20,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +33,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -85,6 +89,8 @@ public class MenuScreenController implements Initializable{
             double ratioX = imgView.getFitHeight() / img.getWidth();
             double ratioY = imgView.getFitWidth() / img.getHeight();
             double reducCoeff;
+            double menuPaneHeight = menuPane.getHeight();
+            double menuPaneWidth = menuPane.getWidth();
             
             if (ratioX >= ratioY) {
                 reducCoeff = ratioY;
@@ -94,6 +100,8 @@ public class MenuScreenController implements Initializable{
             
             imageWidth = img.getWidth() * reducCoeff;
             imageHeight = img.getHeight() * reducCoeff;
+//            imgView.setFitWidth(menuPaneWidth);
+//            imgView.setFitHeight(menuPaneHeight);
             imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
             imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
             System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
@@ -101,55 +109,136 @@ public class MenuScreenController implements Initializable{
         }
     }
     
-    public void centerImage2(ImageView imageView) {
-        Image img = imgFieldView.getImage();
-        double imgHeight = img.getHeight();
-        double imgWidth = img.getWidth();
-        double imgFieldViewHeight = imgFieldView.getFitHeight();
-        double imgFieldViewWidth = imgFieldView.getFitWidth();
-        double menuPaneHeight = menuPane.getPrefHeight();
-        double menuPaneWidth = menuPane.getPrefWidth();
-        
-        imgFieldView.setX((menuPaneWidth - imgFieldViewWidth)/2);
-        imgFieldView.setY((menuPaneHeight - imgFieldViewHeight)/2);
-        img.getRequestedHeight();
-        img.getRequestedWidth();
-        
-        
+    
+    
+    
+    @FXML
+    public void centerImageResize(ImageView imageView){
+        if(imageView.getImage() != null) {
+            double ratioX = imageView.getFitWidth() / imageView.getImage().getWidth();
+            double ratioY = imageView.getFitHeight()/ imageView.getImage().getHeight();
+            double dividerRatio;
+            
+            if(ratioX >= ratioY) {
+                dividerRatio = ratioY;
+            } else {
+                dividerRatio = ratioX;
+            }
+            
+            imageView.setFitWidth(imageView.getImage().getWidth() * dividerRatio);
+            imageView.setFitHeight(imageView.getImage().getHeight() * dividerRatio);
+            
+            
+            imageView.setX(imageView.getFitWidth() - imageView.getImage().getWidth());
+            imageView.setY(imageView.getFitHeight()- imageView.getImage().getHeight());
+        }
+    }
+    
+    @FXML
+    public void center(ImageView imageView) {
+        imageView.setX((menuPane.getWidth() - imageView.getImage().getWidth()) / 2);
+        imageView.setY((menuPane.getHeight() - imageView.getImage().getHeight()) / 2);
     }
      
-     
-//     public void centerImage() {
-//        Image img = imgFieldView.getImage();
-//        if (img != null) {
-//            double w = 0;
-//            double h = 0;
-//
-//            double ratioX = imgFieldView.getFitWidth() / img.getWidth();
-//            double ratioY = imgFieldView.getFitHeight() / img.getHeight();
-//
-//            double reducCoeff = 0;
-//            if(ratioX >= ratioY) {
-//                reducCoeff = ratioY;
-//            } else {
-//                reducCoeff = ratioX;
-//            }
-//
-//            w = img.getWidth() * reducCoeff;
-//            h = img.getHeight() * reducCoeff;
-//
-//            imgFieldView.setX((imgFieldView.getFitWidth() - w) / 2);
-//            imgFieldView.setY((imgFieldView.getFitHeight() - h) / 2);
-//        }
-//    }
-     
-        @Override
+     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Image startAppImage = new Image("/resourcePackage/greybox.png");
         imgFieldView.setImage(startAppImage);
+    }
+    
+    
+    public void resizeImageInsideWindow(double width, double height) {
+        System.out.println("----------------------11111111----------------------");
+        System.out.println("imageView height " + imgFieldView.getFitHeight());
+        System.out.println("imageView width " + imgFieldView.getFitWidth());
+        System.out.println("imageView getX " + imgFieldView.getX());
+        System.out.println("imageView getY " + imgFieldView.getY());
+        System.out.println("scene height " + height);
+        System.out.println("scene width " + width);
+        System.out.println("photo height " + imgFieldView.getImage().getHeight());
+        System.out.println("photo width " + imgFieldView.getImage().getWidth());
+        System.out.println("menuPane width " + menuPane.getWidth());
+        System.out.println("menuPane height " + menuPane.getHeight());
+        System.out.println("imageFieldView preserveRatio " + imgFieldView.preserveRatioProperty());
+        System.out.println("---------------------------------------------------");
         
         
-//            centerImage2(imgFieldView);
+        if(width != 0 && height != 0) {
+            menuPane.setPrefWidth(width);
+            menuPane.setPrefHeight(height);
+        }
+        
+        if (menuPane.getWidth() < imgFieldView.getImage().getWidth() || menuPane.getHeight() < imgFieldView.getImage().getHeight()) {
+            double scaleX = menuPane.getWidth() / imgFieldView.getImage().getWidth();
+            double scaleY = menuPane.getHeight() / imgFieldView.getImage().getHeight();
+            System.out.println("scaleX " + scaleX);
+            System.out.println("scaleY " + scaleY);
+            
+            double scale;
+            if (scaleX > scaleY) {
+                scale = scaleY;
+            } else {
+                scale = scaleX;
+            }
+
+            System.out.println("scale" + scale);
+                 
+            
+            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
+            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
+
+            imgFieldView.setX((menuPane.getWidth() - (imgFieldView.getImage().getWidth() * scale)) / 2);
+            imgFieldView.setY((menuPane.getHeight() - (imgFieldView.getImage().getHeight() * scale)) / 2);
+        } else {            
+            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() );
+            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() );
+            imgFieldView.setX((menuPane.getWidth() - imgFieldView.getImage().getWidth()) / 2);
+            imgFieldView.setY((menuPane.getHeight() - imgFieldView.getImage().getHeight()) / 2);
+        }
+
+        System.out.println("-----------------------2222222---------------------");
+        System.out.println("imageView height " + imgFieldView.getFitHeight());
+        System.out.println("imageView width " + imgFieldView.getFitWidth());
+        System.out.println("imageView getX " + imgFieldView.getX());
+        System.out.println("imageView getY " + imgFieldView.getY());
+        System.out.println("scene height " + height);
+        System.out.println("scene width " + width);
+        System.out.println("photo height " + imgFieldView.getImage().getHeight());
+        System.out.println("photo width " + imgFieldView.getImage().getWidth());
+        System.out.println("menuPane width " + menuPane.getWidth());
+        System.out.println("menuPane height " + menuPane.getHeight());
+        System.out.println("---------------------------------------------------");
+        
+//        imgFieldView.setFitWidth(menuPane.getWidth());
+//        System.out.println("menuPaneWidth" + menuPane.getWidth());
+//        imgFieldView.setFitHeight(menuPane.getHeight());
+
+
+//        imgFieldView.setX(menuPane.getWidth() / 2);
+//        imgFieldView.setY(menuPane.getHeight() / 2);
+
+//        imgFieldView.fitHeightProperty().setValue(1);
+//        imgFieldView.fitWidthProperty().setValue(1);
+        
+
+        System.out.println("-------------------33333333------------------------");  
+        System.out.println("imageView height " + imgFieldView.getFitHeight());
+        System.out.println("imageView width " + imgFieldView.getFitWidth());
+        System.out.println("imageView getX " + imgFieldView.getX());
+        System.out.println("imageView getY " + imgFieldView.getY());
+        System.out.println("scene height " + height);
+        System.out.println("scene width " + width);
+        System.out.println("photo height " + imgFieldView.getImage().getHeight());
+        System.out.println("photo width " + imgFieldView.getImage().getWidth());
+        System.out.println("menuPane width " + menuPane.getWidth());
+        System.out.println("menuPane height " + menuPane.getHeight());
+        System.out.println("---------------------------------------------------");
+        
+    }
+    
+    @FXML
+    public void showSout(MouseEvent mouseEvent) {
+        System.out.println("Mouse released showSout");
     }
      
      /**
@@ -223,9 +312,11 @@ public class MenuScreenController implements Initializable{
     public void loadImageOnScreen(List<File> selectedImagesList) throws MalformedURLException {
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
+//            center(imgFieldView);
             singleFile = selectedImagesList.get(0);
             image = new Image(singleFile.toURL().toString());
             imgFieldView.setImage(image);
+            photoSweep();
 //            image = new Image(singleFile.toURL().toString(),
 //                    900, 400,
 //                    true, true, true);
@@ -246,16 +337,6 @@ public class MenuScreenController implements Initializable{
          */
         imgFieldView.requestFocus();
         
-        //////////
-        
-//        Image openAppImage = imgFieldView.getImage();
-//        if(openAppImage == null) {
-//            openAppImage = new Image("/resourcePackage/move.png");
-//            imgFieldView.setImage(openAppImage);
-//        }
-        
-        ////////
-        System.out.println(singleFile.getName());
         
         if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
             photoSwipCounter++;
@@ -287,11 +368,14 @@ public class MenuScreenController implements Initializable{
          * Code responsible for saving photos into max four different locations 
          * using customize keyCode to write folders under buttons
          */
+        if(keyCodeArrayList == null) {
+            return;
+        }
         for (int i = 0; i < keyCodeArrayList.size(); i++) {
             if(keyCodeArrayList.get(i) == null) {
                 continue;
             }
-            if (event.getCode().equals(keyCodeArrayList.get(i))) {
+            if (event.getCode().equals(keyCodeArrayList.get(i)) && singleFile != null) {
                 if (copyOrMoveStatusFlag == 1) {
                     try {
                         savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
@@ -311,6 +395,11 @@ public class MenuScreenController implements Initializable{
     
     @FXML
     public void imageToFile(Image image) throws IOException {
+        
+        if(singleFile == null) {
+            return;
+        }
+        
         BufferedImage bufferedImage = ImageIO.read(singleFile);
         
         while(angleRotation < 0 || angleRotation >= 360) {
@@ -344,8 +433,37 @@ public class MenuScreenController implements Initializable{
 
     return dest;
 }
+    
+//    @FXML
+//    public double[] photoResizer(ImageView imageView, double width, double height) {
+//        if(imageView.getFitWidth() > menuPane.getWidth() || imageView.getFitHeight() > menuPane.getHeight()) {
+//            double scaleX = imageView.getFitWidth() / menuPane.getWidth();
+//            double scaleY = imageView.getFitHeight() / menuPane.getHeight();
+//            double scale;
+//            
+//            if(scaleX > scaleY) { 
+//                scale = scaleY;
+//            } else { 
+//                scale = scaleX;
+//            }
+//            
+//            
+//        }
+//        
+//    }
+    
+    
 
     private void photoSweep() {
+        if(selectedImgsList == null || selectedImgsList.isEmpty()) {
+            singleFile = null;
+            Image emptyListImage = new Image("/resourcePackage/greybox.png");
+            imgFieldView.setImage(emptyListImage);
+            resizeImageInsideWindow(0, 0);
+            return;
+        }
+        
+        
         if (photoSwipCounter < 0) {
             photoSwipCounter = selectedImgsList.size() - 1;
         } else if (photoSwipCounter >= selectedImgsList.size()) {
@@ -355,18 +473,25 @@ public class MenuScreenController implements Initializable{
         /**
          * set greybox logo if list is empty
          */
-        if(selectedImgsList.isEmpty()) {
-            Image emptyListImage = new Image("/resourcePackage/greybox.png");
-            imgFieldView.setImage(emptyListImage);
-        }
+        
+        
+//        double imageHeight = 9;
+//        double imageWidth = 9;
+        
+        System.out.println("sizeOfSelectedImgsList: " + selectedImgsList.size());
+        
+        
         
         singleFile = selectedImgsList.get(photoSwipCounter);
-        
         image = new Image(singleFile.toURI().toString());
 //        image = new Image(singleFile.toURI().toString(),
-//                900, 400,
+//                imageWidth, imageHeight,
 //                true, true, true);
+
         imgFieldView.setImage(image);
+
+        resizeImageInsideWindow(0, 0);
+
     }
     
     @FXML

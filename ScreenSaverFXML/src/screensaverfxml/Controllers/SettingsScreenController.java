@@ -333,11 +333,11 @@ public class SettingsScreenController implements Initializable {
                 System.out.println("Inside keyChooser method");
                 keyChooseButton1.setText("Click save button");
                 
-                if (cancelationOfListening(event, keyContainer1, keyValidation1, keyChooseButton1)) break;
-                
                 if (event == null) {
                     return;
                 }
+                
+                if (cancelationOfListening(event, keyContainer1, keyValidation1, keyChooseButton1)) break;
                 
                 keyContainer1 = event.getText().toUpperCase().trim();
                 if (keyContainer1.length() > 1 || keyContainer1.length() == 0) {

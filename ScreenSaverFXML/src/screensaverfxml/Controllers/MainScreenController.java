@@ -8,8 +8,6 @@ package screensaverfxml.Controllers;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -31,7 +29,13 @@ public class MainScreenController {
 //       menuPane.getStylesheets().add(getClass().getResource("/styles/StyleSheet.css").toExternalForm());
 //        ("/styles/StyleSheet.css");
        
+        
+        
+
        menuScreenController = loader.getController();
+       
+       
+       
        menuScreenController.setMainController(this);
        setScreen(menuPane);
     }
@@ -41,6 +45,27 @@ public class MainScreenController {
         mainPane.getChildren().add(pane);
     } 
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Width Changed");
+            menuScreenController.resizeImageInsideWindow(stage.getScene().getWidth(), stage.getScene().getHeight());
+            stage.getScene().getWidth();
+            System.out.println("Stage.getScene().getWidth() " + stage.getScene().getWidth());
+        });
+       
+        
+        
+        
+//        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+//            System.out.println("High Changed");
+//            menuScreenController.resizeImageInsideWindow();
+//            stage.getScene().getHeight();
+//            System.out.println("Stage.getScene().getWidth() " + stage.getScene().getHeight());
+//        });
+
+    }
+    
     @FXML
     public void initialize() throws IOException {
         loadMenuScreen();

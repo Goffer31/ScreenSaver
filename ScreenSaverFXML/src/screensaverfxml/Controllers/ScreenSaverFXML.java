@@ -6,6 +6,7 @@
 package screensaverfxml.Controllers;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -21,10 +22,15 @@ public class ScreenSaverFXML extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MainScreen.fxml"));
         Pane mainPane = loader.load();
+//        Scene scene = new Scene(mainPane);
         Scene scene = new Scene(mainPane, 1000, 700);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Screen Saver");
 //        primaryStage.setFullScreen(true);
+
+        MainScreenController mainScreenController = loader.getController();
+        mainScreenController.setStage(primaryStage);
+        
         primaryStage.show();
         
        scene.getRoot().requestFocus();
