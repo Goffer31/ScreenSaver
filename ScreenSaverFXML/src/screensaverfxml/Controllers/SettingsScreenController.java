@@ -41,13 +41,13 @@ import javafx.stage.Stage;
  * @author 8300
  */
 public class SettingsScreenController implements Initializable {
-    
+
     private MenuScreenController menuScreenController;
 
     public void setMenuScreenController(MenuScreenController menuScreenController) {
         this.menuScreenController = menuScreenController;
     }
-    
+
     @FXML
     AnchorPane settingsPane;
 
@@ -57,7 +57,7 @@ public class SettingsScreenController implements Initializable {
     Label sourcePathLabel;
     @FXML
     Label countOfSelectedFilesLabel;
-    
+
     @FXML
     Button targetFolderButton1;
     @FXML
@@ -67,7 +67,7 @@ public class SettingsScreenController implements Initializable {
     String keyContainer1;
     @FXML
     Label keyValidation1;
-    
+
     @FXML
     Button targetFolderButton2;
     @FXML
@@ -77,7 +77,7 @@ public class SettingsScreenController implements Initializable {
     String keyContainer2;
     @FXML
     Label keyValidation2;
-    
+
     @FXML
     Button targetFolderButton3;
     @FXML
@@ -87,7 +87,7 @@ public class SettingsScreenController implements Initializable {
     String keyContainer3;
     @FXML
     Label keyValidation3;
-    
+
     @FXML
     Button targetFolderButton4;
     @FXML
@@ -97,25 +97,25 @@ public class SettingsScreenController implements Initializable {
     String keyContainer4;
     @FXML
     Label keyValidation4;
-    
+
     @FXML
     RadioButton copyRadioButton;
     @FXML
     RadioButton moveRadioButton;
     @FXML
     Button returnButton;
-    
+
     File[] selectedDirectory = new File[4];
-    
+
     int whichIsLastClicked = -1;
     int whichIsLastClicked2 = -1;
-    
+
     ArrayList<String> keyList = new ArrayList<>();
     ArrayList<String> pathList = new ArrayList<>();
-    
+
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final FileChooser fileChooser = new FileChooser();
-    
+
     List<File> selectedImgsList;
 
     public List<File> getSelectedImgsList() {
@@ -125,12 +125,13 @@ public class SettingsScreenController implements Initializable {
     public void setSelectedImgsList(List<File> selectedImgsList) {
         this.selectedImgsList = selectedImgsList;
     }
-    
+
     /**
-     * Method RadioButtonsGroup() is responsible for grouping the radioButtons together, after that set copyButton selected at the begining and logic setting flag responsible for choosing between copying and moveing
+     * Method RadioButtonsGroup() is responsible for grouping the radioButtons
+     * together, after that set copyButton selected at the begining and logic
+     * setting flag responsible for choosing between copying and moveing
      */
-    
-     @FXML
+    @FXML
     private void RadioButtonsGroup() {
         ToggleGroup radioButtonsTg = new ToggleGroup();
         copyRadioButton.setToggleGroup(radioButtonsTg);
@@ -149,13 +150,15 @@ public class SettingsScreenController implements Initializable {
             }
         });
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         settingsPane.requestFocus();
 
         /**
-         * Radio button graphic settings and initialize method RadioButtonsGruup(); responsible for group buttons together and logic backend setting falg
+         * Radio button graphic settings and initialize method
+         * RadioButtonsGruup(); responsible for group buttons together and logic
+         * backend setting falg
          */
         InputStream copyStream = getClass().getResourceAsStream("/resourcePackage/copy.png");
         InputStream moveStream = getClass().getResourceAsStream("/resourcePackage/move.png");
@@ -167,7 +170,6 @@ public class SettingsScreenController implements Initializable {
         RadioButtonsGroup();
 
         //---***---***---***---***---***---***---***---***---***---***---***---*---*
-        
         /**
          * Choosing folders to save photos
          */
@@ -193,7 +195,6 @@ public class SettingsScreenController implements Initializable {
         });
 
         //---***---***---***---***---***---***---***---***---***---***---***---*---*
-        
         /**
          * Choosing key to save photos
          */
@@ -240,48 +241,51 @@ public class SettingsScreenController implements Initializable {
                 });
             }
         });
-        
+
         pathList = new ArrayList<>();
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             pathList.add(null);
         }
     }
 
     /**
-     * Load files and transfer data to MenuScreenController 
+     * Load files and transfer data to MenuScreenController
      */
     @FXML
     public void sourceFolderChooser(MouseEvent mouseEvent) throws MalformedURLException {
-        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
             selectedImgsList = fileChooser.showOpenMultipleDialog(null);
-            
+
             menuScreenController.loadImageOnScreen(selectedImgsList);
-            
+
             /**
              * Printing label and count of selected images
              */
+            if(selectedImgsList == null || selectedImgsList.isEmpty()) {
+                return;
+            }
             
             String printLabel = selectedImgsList.get(0).toString();
             int indexOfCut = printLabel.lastIndexOf("\\");
             if (indexOfCut > 0) {
                 printLabel = printLabel.substring(0, indexOfCut);
             }
-                printSavePath(printLabel, sourcePathLabel);       
-                          
+            printSavePath(printLabel, sourcePathLabel);
+
             countOfSelectedFilesLabel.setText(String.valueOf(selectedImgsList.size()));
             countOfSelectedFilesLabel.setTextFill(Paint.valueOf("#1a7a17"));
         }
     }
-    
+
     @FXML
     private void printSavePath(String path, Label label) {
         System.out.println("Path: " + path);
         System.out.println("Label: " + label);
         label.setText(path);
         label.setTextFill(Paint.valueOf("#4e0754"));
-    } 
-    
+    }
+
     @FXML
     public void savePathChooser(MouseEvent mouseEvent) {
         switch (whichIsLastClicked) {
@@ -310,21 +314,23 @@ public class SettingsScreenController implements Initializable {
                 printSavePath(selectedDirectory[3].getAbsolutePath(), targetPathLabel4);
                 break;
         }
-        
-        for(int i = 0; i < selectedDirectory.length; i++) {
-            if(selectedDirectory[i] != null) {
+
+        for (int i = 0; i < selectedDirectory.length; i++) {
+            if (selectedDirectory[i] != null) {
                 pathList.set(i, selectedDirectory[i].toString());
-            } else { 
+            } else {
                 pathList.set(i, null);
             }
         }
-        
+
         menuScreenController.pathsGenerator(pathList);
     }
-    
+
     /**
-     * keyChooser method is reponsible for get letter after click on button in settings
-     * @param event 
+     * keyChooser method is reponsible for get letter after click on button in
+     * settings
+     *
+     * @param event
      */
     @FXML
     public void keyChooser(KeyEvent event) {
@@ -332,13 +338,15 @@ public class SettingsScreenController implements Initializable {
             case 0:
                 System.out.println("Inside keyChooser method");
                 keyChooseButton1.setText("Click save button");
-                
+
                 if (event == null) {
                     return;
                 }
-                
-                if (cancelationOfListening(event, keyContainer1, keyValidation1, keyChooseButton1)) break;
-                
+
+                if (cancelationOfListening(event, keyContainer1, keyValidation1, keyChooseButton1)) {
+                    break;
+                }
+
                 keyContainer1 = event.getText().toUpperCase().trim();
                 if (keyContainer1.length() > 1 || keyContainer1.length() == 0) {
                     keyValidation1.setText("Too long or empty");
@@ -353,13 +361,15 @@ public class SettingsScreenController implements Initializable {
             case 1:
                 System.out.println("Inside keyChooser method");
                 keyChooseButton2.setText("Click save button");
-                
-                if (cancelationOfListening(event, keyContainer2, keyValidation2, keyChooseButton2)) break;
-                
+
+                if (cancelationOfListening(event, keyContainer2, keyValidation2, keyChooseButton2)) {
+                    break;
+                }
+
                 if (event == null) {
                     return;
                 }
-                
+
                 keyContainer2 = event.getText().toUpperCase().trim();
                 if (keyContainer2.length() > 1 || keyContainer2.length() == 0) {
                     keyValidation2.setText("Too long or empty");
@@ -370,12 +380,14 @@ public class SettingsScreenController implements Initializable {
                 }
                 whichIsLastClicked2 = -1;
                 break;
-                
+
             case 2:
                 System.out.println("Inside keyChooser method");
                 keyChooseButton3.setText("Click save button");
-                
-                if (cancelationOfListening(event, keyContainer3, keyValidation3, keyChooseButton3)) break;
+
+                if (cancelationOfListening(event, keyContainer3, keyValidation3, keyChooseButton3)) {
+                    break;
+                }
 
                 if (event == null) {
                     return;
@@ -391,12 +403,14 @@ public class SettingsScreenController implements Initializable {
                 }
                 whichIsLastClicked2 = -1;
                 break;
-                
+
             case 3:
                 System.out.println("Inside keyChooser method");
                 keyChooseButton4.setText("Click save button");
 
-                if (cancelationOfListening(event, keyContainer4, keyValidation4, keyChooseButton4)) break;
+                if (cancelationOfListening(event, keyContainer4, keyValidation4, keyChooseButton4)) {
+                    break;
+                }
 
                 if (event == null) {
                     return;
@@ -413,8 +427,8 @@ public class SettingsScreenController implements Initializable {
                 whichIsLastClicked2 = -1;
                 break;
         }
-        
-        if(keyList.isEmpty()) {
+
+        if (keyList.isEmpty()) {
             keyList.add(keyContainer1);
             keyList.add(keyContainer2);
             keyList.add(keyContainer3);
@@ -429,15 +443,17 @@ public class SettingsScreenController implements Initializable {
         menuScreenController.stringToKeyCodeGenerator(keyList);
     }
 
-    
     /**
-     * calcelationOfListening is reponsible for cancel of listening in keyChooser method, before we choose key to connect with path, after click ESCAPE.
+     * calcelationOfListening is reponsible for cancel of listening in
+     * keyChooser method, before we choose key to connect with path, after click
+     * ESCAPE.
+     *
      * @param event
      * @param containerLabel
      * @param validationLabel
      * @param keyChooseButton
-     * @return 
-     */    
+     * @return
+     */
     private boolean cancelationOfListening(KeyEvent event, String containerLabel, Label validationLabel, Button keyChooseButton) {
         if (event.getCode().equals(KeyCode.ESCAPE)) {
             event.consume();
@@ -450,7 +466,7 @@ public class SettingsScreenController implements Initializable {
         }
         return false;
     }
-    
+
     @FXML
     public void exit() {
         Stage stage = (Stage) returnButton.getScene().getWindow();
@@ -458,5 +474,4 @@ public class SettingsScreenController implements Initializable {
         menuScreenController.imageViewRequestFocus();
     }
 
-    
 }

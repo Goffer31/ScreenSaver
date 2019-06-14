@@ -17,33 +17,25 @@ import javafx.stage.Stage;
  * @author Admin
  */
 public class MainScreenController {
-    
+
     @FXML
     private Pane mainPane;
     Stage stage;
     MenuScreenController menuScreenController;
-    
-    private void loadMenuScreen() throws IOException {
-       FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MenuScreen.fxml"));
-       Pane menuPane = loader.load();
-//       menuPane.getStylesheets().add(getClass().getResource("/styles/StyleSheet.css").toExternalForm());
-//        ("/styles/StyleSheet.css");
-       
-        
-        
 
-       menuScreenController = loader.getController();
-       
-       
-       
-       menuScreenController.setMainController(this);
-       setScreen(menuPane);
+    private void loadMenuScreen() throws IOException {
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MenuScreen.fxml"));
+        Pane menuPane = loader.load();
+
+        menuScreenController = loader.getController();
+        menuScreenController.setMainController(this);
+        setScreen(menuPane);
     }
-    
+
     public void setScreen(Pane pane) {
         mainPane.getChildren().clear();
         mainPane.getChildren().add(pane);
-    } 
+    }
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -53,22 +45,11 @@ public class MainScreenController {
             stage.getScene().getWidth();
             System.out.println("Stage.getScene().getWidth() " + stage.getScene().getWidth());
         });
-       
-        
-        
-        
-//        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-//            System.out.println("High Changed");
-//            menuScreenController.resizeImageInsideWindow();
-//            stage.getScene().getHeight();
-//            System.out.println("Stage.getScene().getWidth() " + stage.getScene().getHeight());
-//        });
-
     }
-    
+
     @FXML
     public void initialize() throws IOException {
         loadMenuScreen();
     }
-    
+
 }
