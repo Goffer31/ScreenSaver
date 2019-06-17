@@ -38,6 +38,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
+import screensaverfxml.Controllers.MainScreenController.ValueContainer;
 
 /**
  *
@@ -59,6 +60,7 @@ public class MenuScreenController implements Initializable {
 
     private MainScreenController mainScreenController;
     private SettingsScreenController settingsScreenController;
+    private ValueContainer valueContainer;
 
     final FileChooser fileChooser = new FileChooser();
 
@@ -131,6 +133,10 @@ public class MenuScreenController implements Initializable {
 //        imageView.setX((menuPane.getWidth() - imageView.getImage().getWidth()) / 2);
 //        imageView.setY((menuPane.getHeight() - imageView.getImage().getHeight()) / 2);
 //    }
+    
+    public void setValueContainer(ValueContainer valueContainer) { 
+        this.valueContainer = valueContainer;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -138,15 +144,18 @@ public class MenuScreenController implements Initializable {
         imgFieldView.setImage(startAppImage);
     }
 
-    public void resizeImageInsideWindow(double width, double height) {
+    public void resizeImageInsideWindow() {
+        double width = valueContainer.xChecker - valueContainer.xCheckerOffset;
+        double height = valueContainer.yChecker - valueContainer.yCheckerOffset;
+        
         if (width != 0 && height != 0) {
             menuPane.setPrefWidth(width);
             menuPane.setPrefHeight(height);
         }
 
-        if (menuPane.getWidth() < imgFieldView.getImage().getWidth() || menuPane.getHeight() < imgFieldView.getImage().getHeight()) {
-            double scaleX = menuPane.getWidth() / imgFieldView.getImage().getWidth();
-            double scaleY = menuPane.getHeight() / imgFieldView.getImage().getHeight();
+        if (width < imgFieldView.getImage().getWidth() || height < imgFieldView.getImage().getHeight()) {
+            double scaleX = width / imgFieldView.getImage().getWidth();
+            double scaleY = height / imgFieldView.getImage().getHeight();
             System.out.println("scaleX " + scaleX);
             System.out.println("scaleY " + scaleY);
 
@@ -160,15 +169,47 @@ public class MenuScreenController implements Initializable {
             imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
             imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
 
-            imgFieldView.setX((menuPane.getWidth() - (imgFieldView.getImage().getWidth() * scale)) / 2);
-            imgFieldView.setY((menuPane.getHeight() - (imgFieldView.getImage().getHeight() * scale)) / 2);
+            imgFieldView.setX((width - (imgFieldView.getImage().getWidth() * scale)) / 2);
+            imgFieldView.setY((height - (imgFieldView.getImage().getHeight() * scale)) / 2);
         } else {
             imgFieldView.setFitWidth(imgFieldView.getImage().getWidth());
             imgFieldView.setFitHeight(imgFieldView.getImage().getHeight());
-            imgFieldView.setX((menuPane.getWidth() - imgFieldView.getImage().getWidth()) / 2);
-            imgFieldView.setY((menuPane.getHeight() - imgFieldView.getImage().getHeight()) / 2);
+            imgFieldView.setX((width - imgFieldView.getImage().getWidth()) / 2);
+            imgFieldView.setY((height - imgFieldView.getImage().getHeight()) / 2);
         }
     }
+    
+//        public void resizeImageInsideWindow(double width, double height) {
+//        if (width != 0 && height != 0) {
+//            menuPane.setPrefWidth(width);
+//            menuPane.setPrefHeight(height);
+//        }
+//
+//        if (menuPane.getWidth() < imgFieldView.getImage().getWidth() || menuPane.getHeight() < imgFieldView.getImage().getHeight()) {
+//            double scaleX = menuPane.getWidth() / imgFieldView.getImage().getWidth();
+//            double scaleY = menuPane.getHeight() / imgFieldView.getImage().getHeight();
+//            System.out.println("scaleX " + scaleX);
+//            System.out.println("scaleY " + scaleY);
+//
+//            double scale;
+//            if (scaleX > scaleY) {
+//                scale = scaleY;
+//            } else {
+//                scale = scaleX;
+//            }
+//           
+//            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
+//            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
+//
+//            imgFieldView.setX((menuPane.getWidth() - (imgFieldView.getImage().getWidth() * scale)) / 2);
+//            imgFieldView.setY((menuPane.getHeight() - (imgFieldView.getImage().getHeight() * scale)) / 2);
+//        } else {
+//            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth());
+//            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight());
+//            imgFieldView.setX((menuPane.getWidth() - imgFieldView.getImage().getWidth()) / 2);
+//            imgFieldView.setY((menuPane.getHeight() - imgFieldView.getImage().getHeight()) / 2);
+//        }
+//    }
 
     @FXML
     public void showSout(MouseEvent mouseEvent) {
@@ -365,7 +406,7 @@ public class MenuScreenController implements Initializable {
             singleFile = null;
             Image emptyListImage = new Image("/resourcePackage/greybox.png");
             imgFieldView.setImage(emptyListImage);
-            resizeImageInsideWindow(0, 0);
+            resizeImageInsideWindow();
             return;
         }
 
@@ -382,7 +423,7 @@ public class MenuScreenController implements Initializable {
         singleFile = selectedImgsList.get(photoSwipCounter);
         image = new Image(singleFile.toURI().toString());
         imgFieldView.setImage(image);
-        resizeImageInsideWindow(0, 0);
+        resizeImageInsideWindow();
     }
 
     @FXML

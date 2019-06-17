@@ -43,23 +43,41 @@ public class MainScreenController {
         mainPane.getChildren().add(pane);
     }
     
-    private class ValueContainer {
+    public class ValueContainer {
         public double yChecker = 0;
         public double xChecker = 0;
+        public double yCheckerOffset = 0;
+        public double xCheckerOffset = 0;
         
         @Override
         public String toString() { 
             return "xChecker: " + xChecker + ", yChecker: " + yChecker;
         }
+        
+        public void calculateXoffset(double sceneWidth) {
+            if(xCheckerOffset == 0) {
+                xCheckerOffset = xChecker - sceneWidth;
+            }
+        }
+        
+        public void calculateYoffset(double sceneHeight) {
+            if(yCheckerOffset == 0 ) {
+                yCheckerOffset = yChecker - sceneHeight;
+            }
+        }
+        
     } 
 
     public void setStage(Stage stage) {
         this.stage = stage;
-        
+        menuScreenController.setValueContainer(valueContainer);
         
         
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
             valueContainer.xChecker = newVal.doubleValue();
+            
+            
+            stage.setFullScreen(true);
             
            
             
@@ -67,12 +85,13 @@ public class MainScreenController {
             System.out.println("Width Changed");
             System.out.println("OldVal width: " + oldVal);
             System.out.println("NewVal width: " + newVal);
-            
+            valueContainer.calculateXoffset(stage.getScene().getWidth());
             if(valueContainer.xChecker != 0 && valueContainer.yChecker != 0) {
-                menuScreenController.resizeImageInsideWindow(valueContainer.xChecker, valueContainer.yChecker);
+                menuScreenController.resizeImageInsideWindow();
             }
             stage.getScene().getWidth();
             System.out.println("Stage.getScene().getWidth() " + stage.getScene().getWidth());
+            System.out.println("Stage.getScene().getHeight() " + stage.getScene().getHeight());
         });
         
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
@@ -83,11 +102,13 @@ public class MainScreenController {
             System.out.println("OldVal height: " + oldVal);
             System.out.println("NewVal height: " + newVal);
             
+            valueContainer.calculateYoffset(stage.getScene().getHeight());
             if(valueContainer.xChecker != 0 && valueContainer.yChecker != 0) {
-                menuScreenController.resizeImageInsideWindow(valueContainer.xChecker, valueContainer.yChecker);
+                menuScreenController.resizeImageInsideWindow();
             }
             stage.getScene().getWidth();
             System.out.println("Stage.getScene().getWidth() " + stage.getScene().getWidth());
+            System.out.println("Stage.getScene().getHeight() " + stage.getScene().getHeight());
         });
         
         //////////////////////////////////////////
