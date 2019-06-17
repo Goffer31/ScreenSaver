@@ -49,6 +49,8 @@ public class MenuScreenController implements Initializable {
     private ImageView imgFieldView;
     @FXML
     private Pane menuPane;
+    
+    private final String numberRegex = "[0-9]";
 
     Image image;
     double angleRotation;
@@ -77,58 +79,58 @@ public class MenuScreenController implements Initializable {
     }
 
 //    Method to make image on the center of the screen
-    public void centerImage(ImageView imgView) {
-        Image img = imgView.getImage();
-        if (img != null) {
-            double imageWidth;
-            double imageHeight;
-            double ratioX = imgView.getFitHeight() / img.getWidth();
-            double ratioY = imgView.getFitWidth() / img.getHeight();
-            double reducCoeff;
-            double menuPaneHeight = menuPane.getHeight();
-            double menuPaneWidth = menuPane.getWidth();
+//    public void centerImage(ImageView imgView) {
+//        Image img = imgView.getImage();
+//        if (img != null) {
+//            double imageWidth;
+//            double imageHeight;
+//            double ratioX = imgView.getFitHeight() / img.getWidth();
+//            double ratioY = imgView.getFitWidth() / img.getHeight();
+//            double reducCoeff;
+//            double menuPaneHeight = menuPane.getHeight();
+//            double menuPaneWidth = menuPane.getWidth();
+//
+//            if (ratioX >= ratioY) {
+//                reducCoeff = ratioY;
+//            } else {
+//                reducCoeff = ratioX;
+//            }
+//
+//            imageWidth = img.getWidth() * reducCoeff;
+//            imageHeight = img.getHeight() * reducCoeff;
+//            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
+//            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
+//            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
+//            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
+//        }
+//    }
 
-            if (ratioX >= ratioY) {
-                reducCoeff = ratioY;
-            } else {
-                reducCoeff = ratioX;
-            }
+//    @FXML
+//    public void centerImageResize(ImageView imageView) {
+//        if (imageView.getImage() != null) {
+//            double ratioX = imageView.getFitWidth() / imageView.getImage().getWidth();
+//            double ratioY = imageView.getFitHeight() / imageView.getImage().getHeight();
+//            double dividerRatio;
+//
+//            if (ratioX >= ratioY) {
+//                dividerRatio = ratioY;
+//            } else {
+//                dividerRatio = ratioX;
+//            }
+//
+//            imageView.setFitWidth(imageView.getImage().getWidth() * dividerRatio);
+//            imageView.setFitHeight(imageView.getImage().getHeight() * dividerRatio);
+//
+//            imageView.setX(imageView.getFitWidth() - imageView.getImage().getWidth());
+//            imageView.setY(imageView.getFitHeight() - imageView.getImage().getHeight());
+//        }
+//    }
 
-            imageWidth = img.getWidth() * reducCoeff;
-            imageHeight = img.getHeight() * reducCoeff;
-            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
-            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
-            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
-        }
-    }
-
-    @FXML
-    public void centerImageResize(ImageView imageView) {
-        if (imageView.getImage() != null) {
-            double ratioX = imageView.getFitWidth() / imageView.getImage().getWidth();
-            double ratioY = imageView.getFitHeight() / imageView.getImage().getHeight();
-            double dividerRatio;
-
-            if (ratioX >= ratioY) {
-                dividerRatio = ratioY;
-            } else {
-                dividerRatio = ratioX;
-            }
-
-            imageView.setFitWidth(imageView.getImage().getWidth() * dividerRatio);
-            imageView.setFitHeight(imageView.getImage().getHeight() * dividerRatio);
-
-            imageView.setX(imageView.getFitWidth() - imageView.getImage().getWidth());
-            imageView.setY(imageView.getFitHeight() - imageView.getImage().getHeight());
-        }
-    }
-
-    @FXML
-    public void center(ImageView imageView) {
-        imageView.setX((menuPane.getWidth() - imageView.getImage().getWidth()) / 2);
-        imageView.setY((menuPane.getHeight() - imageView.getImage().getHeight()) / 2);
-    }
+//    @FXML
+//    public void center(ImageView imageView) {
+//        imageView.setX((menuPane.getWidth() - imageView.getImage().getWidth()) / 2);
+//        imageView.setY((menuPane.getHeight() - imageView.getImage().getHeight()) / 2);
+//    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -154,7 +156,7 @@ public class MenuScreenController implements Initializable {
             } else {
                 scale = scaleX;
             }
-
+           
             imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
             imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
 
@@ -189,8 +191,12 @@ public class MenuScreenController implements Initializable {
         for (int i = 0; i < stringKeyArrayList.size(); i++) {
             temporaryString = stringKeyArrayList.get(i);
             if (temporaryString != null) {
-                System.out.println("temporaryString: " + temporaryString);
-                temporaryKeyCode = KeyCode.valueOf(temporaryString);
+                System.out.println("temporaryString: " + temporaryString + " size of temporaryString: " + temporaryString.length());
+                if (temporaryString.matches(numberRegex)) {
+                    temporaryKeyCode = KeyCode.valueOf("DIGIT" + temporaryString);
+                } else {
+                    temporaryKeyCode = KeyCode.valueOf(temporaryString);
+                }
                 keyCodeArrayList.add(temporaryKeyCode);
             } else {
                 keyCodeArrayList.add(null);
