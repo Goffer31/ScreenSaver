@@ -344,6 +344,7 @@ public class SettingsScreenController implements Initializable {
                 }
 
                 if (cancelationOfListening(event, keyContainer1, keyValidation1, keyChooseButton1)) {
+                    keyContainer1 = null;
                     break;
                 }
 
@@ -363,6 +364,7 @@ public class SettingsScreenController implements Initializable {
                 keyChooseButton2.setText("Click save button");
 
                 if (cancelationOfListening(event, keyContainer2, keyValidation2, keyChooseButton2)) {
+                    keyContainer2 = null;
                     break;
                 }
 
@@ -386,6 +388,7 @@ public class SettingsScreenController implements Initializable {
                 keyChooseButton3.setText("Click save button");
 
                 if (cancelationOfListening(event, keyContainer3, keyValidation3, keyChooseButton3)) {
+                    keyContainer3 = null;
                     break;
                 }
 
@@ -409,6 +412,7 @@ public class SettingsScreenController implements Initializable {
                 keyChooseButton4.setText("Click save button");
 
                 if (cancelationOfListening(event, keyContainer4, keyValidation4, keyChooseButton4)) {
+                    keyContainer4 = null;
                     break;
                 }
 
@@ -455,7 +459,11 @@ public class SettingsScreenController implements Initializable {
      * @return
      */
     private boolean cancelationOfListening(KeyEvent event, String containerLabel, Label validationLabel, Button keyChooseButton) {
-        if (event.getCode().equals(KeyCode.ESCAPE)) {
+
+        if (event == null) {
+            System.out.println("Event is null");
+            return false;
+        } else if (event.getCode().equals(KeyCode.ESCAPE)) {
             event.consume();
             containerLabel = null;
             validationLabel.setText(null);

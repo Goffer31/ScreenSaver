@@ -50,6 +50,8 @@ public class MenuScreenController implements Initializable {
     private ImageView imgFieldView;
     @FXML
     private Pane menuPane;
+    @FXML
+    private MenuItem fullScreenMenuItem;
     
     private final String numberRegex = "[0-9]";
 
@@ -79,62 +81,13 @@ public class MenuScreenController implements Initializable {
     public void setCopyOrMoveStatusFlag(int copyOrMoveStatusFlag) {
         this.copyOrMoveStatusFlag = copyOrMoveStatusFlag;
     }
-
-//    Method to make image on the center of the screen
-//    public void centerImage(ImageView imgView) {
-//        Image img = imgView.getImage();
-//        if (img != null) {
-//            double imageWidth;
-//            double imageHeight;
-//            double ratioX = imgView.getFitHeight() / img.getWidth();
-//            double ratioY = imgView.getFitWidth() / img.getHeight();
-//            double reducCoeff;
-//            double menuPaneHeight = menuPane.getHeight();
-//            double menuPaneWidth = menuPane.getWidth();
-//
-//            if (ratioX >= ratioY) {
-//                reducCoeff = ratioY;
-//            } else {
-//                reducCoeff = ratioX;
-//            }
-//
-//            imageWidth = img.getWidth() * reducCoeff;
-//            imageHeight = img.getHeight() * reducCoeff;
-//            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-//            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
-//            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
-//            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
-//        }
-//    }
-
-//    @FXML
-//    public void centerImageResize(ImageView imageView) {
-//        if (imageView.getImage() != null) {
-//            double ratioX = imageView.getFitWidth() / imageView.getImage().getWidth();
-//            double ratioY = imageView.getFitHeight() / imageView.getImage().getHeight();
-//            double dividerRatio;
-//
-//            if (ratioX >= ratioY) {
-//                dividerRatio = ratioY;
-//            } else {
-//                dividerRatio = ratioX;
-//            }
-//
-//            imageView.setFitWidth(imageView.getImage().getWidth() * dividerRatio);
-//            imageView.setFitHeight(imageView.getImage().getHeight() * dividerRatio);
-//
-//            imageView.setX(imageView.getFitWidth() - imageView.getImage().getWidth());
-//            imageView.setY(imageView.getFitHeight() - imageView.getImage().getHeight());
-//        }
-//    }
-
-//    @FXML
-//    public void center(ImageView imageView) {
-//        imageView.setX((menuPane.getWidth() - imageView.getImage().getWidth()) / 2);
-//        imageView.setY((menuPane.getHeight() - imageView.getImage().getHeight()) / 2);
-//    }
     
-    public void setValueContainer(ValueContainer valueContainer) { 
+    @FXML
+    public void setFullScreenMenuItem(ActionEvent event) {
+        mainScreenController.stage.setFullScreen(!mainScreenController.stage.isFullScreen());
+    }
+
+    public void setValueContainer(ValueContainer valueContainer) {
         this.valueContainer = valueContainer;
     }
 
@@ -179,37 +132,6 @@ public class MenuScreenController implements Initializable {
         }
     }
     
-//        public void resizeImageInsideWindow(double width, double height) {
-//        if (width != 0 && height != 0) {
-//            menuPane.setPrefWidth(width);
-//            menuPane.setPrefHeight(height);
-//        }
-//
-//        if (menuPane.getWidth() < imgFieldView.getImage().getWidth() || menuPane.getHeight() < imgFieldView.getImage().getHeight()) {
-//            double scaleX = menuPane.getWidth() / imgFieldView.getImage().getWidth();
-//            double scaleY = menuPane.getHeight() / imgFieldView.getImage().getHeight();
-//            System.out.println("scaleX " + scaleX);
-//            System.out.println("scaleY " + scaleY);
-//
-//            double scale;
-//            if (scaleX > scaleY) {
-//                scale = scaleY;
-//            } else {
-//                scale = scaleX;
-//            }
-//           
-//            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
-//            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
-//
-//            imgFieldView.setX((menuPane.getWidth() - (imgFieldView.getImage().getWidth() * scale)) / 2);
-//            imgFieldView.setY((menuPane.getHeight() - (imgFieldView.getImage().getHeight() * scale)) / 2);
-//        } else {
-//            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth());
-//            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight());
-//            imgFieldView.setX((menuPane.getWidth() - imgFieldView.getImage().getWidth()) / 2);
-//            imgFieldView.setY((menuPane.getHeight() - imgFieldView.getImage().getHeight()) / 2);
-//        }
-//    }
 
     @FXML
     public void showSout(MouseEvent mouseEvent) {
@@ -356,6 +278,26 @@ public class MenuScreenController implements Initializable {
                 }
                 if (copyOrMoveStatusFlag == 2) {
                     savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+                    //////////////////////
+//
+//                    int sameKeyCodeCounter = 0;
+//                    for (int j = 0; j < keyCodeArrayList.size(); j++) {
+//                        if (keyCodeArrayList.get(i) == keyCodeArrayList.get(j)) {
+//                            sameKeyCodeCounter++;
+//                        }
+//                    }
+//                    if (sameKeyCodeCounter == 1) {
+//                        savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+//                    } else {
+//                        for (int k = 0; k < sameKeyCodeCounter - 1; k++) {
+//                            try {
+//                                savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
+//                            } catch (IOException ex) {
+//                                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                        }
+//                        savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+//                    }
                 }
             }
         }

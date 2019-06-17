@@ -65,7 +65,6 @@ public class MainScreenController {
                 yCheckerOffset = yChecker - sceneHeight;
             }
         }
-        
     } 
 
     public void setStage(Stage stage) {
@@ -77,7 +76,7 @@ public class MainScreenController {
             valueContainer.xChecker = newVal.doubleValue();
             
             
-            stage.setFullScreen(true);
+//            setFullScreenStage(menuScreenController.fullScreenState);
             
            
             
@@ -111,40 +110,11 @@ public class MainScreenController {
             System.out.println("Stage.getScene().getHeight() " + stage.getScene().getHeight());
         });
         
-        //////////////////////////////////////////
-        
-//        if(stage.isFullScreen()) {
-////            stage.getScene().getWidth();
-//            menuScreenController.resizeImageInsideWindow(stage.getScene().getWidth(), stage.getScene().getHeight());
-//            stage.getScene().getWidth();
-//            
-//        }
-//        
-//        stage.maximizedProperty().addListener((obs, oldVal, newVal) -> {
-//            System.out.println("Maximized width Changed");
-//            System.out.println("newVal: " + newVal);
-//            
-//            if(newVal || oldVal) {
-//                menuScreenController.resizeImageInsideWindow(stage.getScene().getWidth(), stage.getScene().getHeight());
-////                menuScreenController.resizeImageInsideWindow(0, 0);
-////                stage.setMaximized(true);
-//                
-//            stage.getScene().getWidth();
-//            }
-//            
-////            stage.setFullScreen(true);
-////            stage.isFullScreen();
-////            stage.sizeToScene();
-////            stage.setFullScreen(true);
-//            menuScreenController.resizeImageInsideWindow(stage.getScene().getWidth(), stage.getScene().getHeight());
-//            stage.getScene().getWidth();
-//            System.out.println("Stage.getScene().getWidth() " + stage.getScene().getWidth());
-//        });
-        
-        
-
-        
     }
+
+//    public void setFullScreenStage(boolean value) {
+//        stage.setFullScreen(value);
+//    }
 
     @FXML
     public void initialize() throws IOException {

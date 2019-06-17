@@ -14,7 +14,7 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
                   <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#showSettingsWindow" text="Settings" />
-                  <MenuItem mnemonicParsing="false" text="Full Screen" />
+                  <MenuItem fx:id="fullScreenMenuItem" mnemonicParsing="false" onAction="#setFullScreenMenuItem" text="Full Screen" />
               <MenuItem fx:id="closeMenu" mnemonicParsing="false" onAction="#exit" text="Close" />
             </items>
           </Menu>
