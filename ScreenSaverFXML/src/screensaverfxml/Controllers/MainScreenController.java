@@ -34,7 +34,7 @@ public class MainScreenController {
         Pane menuPane = loader.load();
 
         menuScreenController = loader.getController();
-        menuScreenController.setMainController(this);
+        menuScreenController.setMainScreenController(this);
         setScreen(menuPane);
     }
 
