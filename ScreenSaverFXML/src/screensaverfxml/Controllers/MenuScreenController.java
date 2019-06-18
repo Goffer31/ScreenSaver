@@ -14,6 +14,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -74,7 +75,7 @@ public class MenuScreenController implements Initializable {
     ArrayList<String> pathTargetArrayList;
     int copyOrMoveStatusFlag = 1;
 
-    void setMainController(MainScreenController mainScreenController) {
+    void setMainScreenController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
     }
 
@@ -165,6 +166,7 @@ public class MenuScreenController implements Initializable {
                 keyCodeArrayList.add(null);
             }
         }
+        System.out.println("keyCodeArrayList contains: " + keyCodeArrayList);
         return keyCodeArrayList;
     }
 
@@ -188,6 +190,7 @@ public class MenuScreenController implements Initializable {
                 pathTargetArrayList.add(null);
             }
         }
+        System.out.println("pathTargetArrayList contains: " + pathTargetArrayList);
         return pathTargetArrayList;
     }
 
@@ -212,10 +215,11 @@ public class MenuScreenController implements Initializable {
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
             singleFile = selectedImagesList.get(0);
+            System.out.println("singleFile contains: " + singleFile);
             image = new Image(singleFile.toURL().toString());
             imgFieldView.setImage(image);
             photoSweep();
-            System.out.println(singleFile.getName());
+            System.out.println("loadImageOnScreen Invocation: " + singleFile.getName());
             for (int i = 0; i < selectedImagesList.size(); i++) {
                 System.out.println(selectedImagesList.get(i).getName());
             }
@@ -228,6 +232,7 @@ public class MenuScreenController implements Initializable {
     public void getNewImageHandler(KeyEvent event) {
         /**
          * Code responsible for switching photos
+         * accessed from MenuScreen.fxml
          */
         imgFieldView.requestFocus();
 
@@ -255,8 +260,7 @@ public class MenuScreenController implements Initializable {
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
-        //---***---***---***---***---***---***---***---***---***---***---***---*
-
+        //---***---***---***---***---***---***---***---***---***---***---*
         /**
          * Code responsible for saving photos into max four different locations
          * using customize keyCode to write folders under buttons
@@ -385,7 +389,7 @@ public class MenuScreenController implements Initializable {
         Path sourceDirectory = Paths.get(singleFile.getAbsolutePath());
         String targetDirectoryString = directory + "\\" + singleFile.getName();
         Path targetDirectory = Paths.get(targetDirectoryString);
-        Files.copy(sourceDirectory, targetDirectory);
+        Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
 
         ArrayList<File> temporaryArrayList = new ArrayList<>();
         for (int i = 0; i < selectedImgsList.size(); i++) {
