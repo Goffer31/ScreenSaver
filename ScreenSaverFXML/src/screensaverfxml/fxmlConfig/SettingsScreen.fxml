@@ -4,8 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" fx:id="settingsPane" prefHeight="605.0" prefWidth="484.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.SettingsScreenController">
    <children>
@@ -14,8 +17,14 @@
       <Label fx:id="sourcePathLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="48.0" prefHeight="30.0" prefWidth="304.0" text="Source path" />
       <Button fx:id="targetFolderButton1" layoutX="98.0" layoutY="110.0" mnemonicParsing="false" text="Choose first target folder " />
       <Label fx:id="targetPathLabel1" alignment="CENTER" contentDisplay="CENTER" layoutX="112.0" layoutY="135.0" prefHeight="30.0" prefWidth="304.0" text="First target path" />
-      <RadioButton fx:id="copyRadioButton" layoutX="184.0" layoutY="483.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="213.0" text="Copy" />
-      <RadioButton fx:id="moveRadioButton" layoutX="184.0" layoutY="526.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="213.0" text="Move" />
+      <RadioButton fx:id="copyRadioButton" layoutX="137.0" layoutY="505.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="62.0" text="Copy">
+         <font>
+            <Font size="14.0" />
+         </font></RadioButton>
+      <RadioButton fx:id="moveRadioButton" layoutX="316.0" layoutY="505.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="62.0" text="Move">
+         <font>
+            <Font size="14.0" />
+         </font></RadioButton>
       <Button fx:id="targetFolderButton2" layoutX="81.0" layoutY="205.0" mnemonicParsing="false" text="Choose second target folder " />
       <Label fx:id="targetPathLabel2" alignment="CENTER" contentDisplay="CENTER" layoutX="114.0" layoutY="230.0" prefHeight="30.0" prefWidth="304.0" text="Second target path" />
       <Button fx:id="targetFolderButton3" layoutX="93.0" layoutY="300.0" mnemonicParsing="false" text="Choose third target folder " />
@@ -40,5 +49,15 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#748190" height="608.0" layoutX="508.0" layoutY="-1.0" stroke="TRANSPARENT" strokeType="INSIDE" width="15.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#748190" height="15.0" layoutY="-1.0" stroke="TRANSPARENT" strokeType="INSIDE" width="518.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#748190" height="15.0" layoutY="594.0" stroke="TRANSPARENT" strokeType="INSIDE" width="523.0" />
+      <ImageView fitHeight="43.0" fitWidth="62.0" layoutX="92.0" layoutY="505.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../resourcePackage/copyFigure.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="43.0" fitWidth="62.0" layoutX="269.0" layoutY="505.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../resourcePackage/moveFigure.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

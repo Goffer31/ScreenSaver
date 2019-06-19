@@ -51,8 +51,7 @@ public class MenuScreenController implements Initializable {
     private ImageView imgFieldView;
     @FXML
     private Pane menuPane;
-    @FXML
-    private MenuItem fullScreenMenuItem;
+    
     
     private final String numberRegex = "[0-9]";
 

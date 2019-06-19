@@ -6,7 +6,6 @@
 package screensaverfxml.Controllers;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,8 +21,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -160,13 +157,6 @@ public class SettingsScreenController implements Initializable {
          * RadioButtonsGruup(); responsible for group buttons together and logic
          * backend setting falg
          */
-        InputStream copyStream = getClass().getResourceAsStream("/resourcePackage/copy.png");
-        InputStream moveStream = getClass().getResourceAsStream("/resourcePackage/move.png");
-        Image copyImg = new Image(copyStream);
-        Image moveImg = new Image(moveStream);
-        copyRadioButton.setGraphic(new ImageView(copyImg));
-        moveRadioButton.setGraphic(new ImageView(moveImg));
-
         RadioButtonsGroup();
 
         //---***---***---***---***---***---***---***---***---***---***---***---*---*
