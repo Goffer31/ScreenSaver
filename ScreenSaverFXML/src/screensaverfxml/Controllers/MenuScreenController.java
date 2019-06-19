@@ -274,7 +274,7 @@ public class MenuScreenController implements Initializable {
                 continue;
             }
             if (event.getCode().equals(keyCodeArrayList.get(i)) && singleFile != null) {
-                String targetStringTest = null;
+                String patchContainer = null;
                 for (int j = 0; j < keyCodeArrayList.size(); j++) {
                     if (keyCodeArrayList.get(i) == keyCodeArrayList.get(j)) {
                         if (copyOrMoveStatusFlag == 1) {
@@ -288,7 +288,7 @@ public class MenuScreenController implements Initializable {
                         if (copyOrMoveStatusFlag == 2) {
                             try {
                                 savePhotoWithCopy(singleFile, pathTargetArrayList.get(j));
-                                targetStringTest = pathTargetArrayList.get(j);
+                                patchContainer = pathTargetArrayList.get(j);
                                 System.out.println("savePhotoWithCopy2");
                             } catch (IOException e) {
                                 Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, e);
@@ -303,7 +303,7 @@ public class MenuScreenController implements Initializable {
                     return;
                 }
                 if (copyOrMoveStatusFlag == 2) {
-                    savePhotoAndDelete(singleFile, targetStringTest);
+                    savePhotoAndDelete(singleFile, patchContainer);
                     clearListAfterCopy();
                     return;
                 }
