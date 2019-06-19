@@ -5,7 +5,6 @@
  */
 package screensaverfxml.Controllers;
 
-import com.sun.javafx.binding.BindingHelperObserver;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,11 +74,6 @@ public class MainScreenController {
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
             valueContainer.xChecker = newVal.doubleValue();
             
-            
-//            setFullScreenStage(menuScreenController.fullScreenState);
-            
-           
-            
             System.out.println(valueContainer);
             System.out.println("Width Changed");
             System.out.println("OldVal width: " + oldVal);
@@ -111,10 +105,6 @@ public class MainScreenController {
         });
         
     }
-
-//    public void setFullScreenStage(boolean value) {
-//        stage.setFullScreen(value);
-//    }
 
     @FXML
     public void initialize() throws IOException {
