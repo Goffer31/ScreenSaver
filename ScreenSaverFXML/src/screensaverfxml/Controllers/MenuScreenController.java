@@ -235,6 +235,8 @@ public class MenuScreenController implements Initializable {
          */
         imgFieldView.requestFocus();
 
+        System.out.println("getNewImageHandlerInvoked");
+        
         if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
             photoSwipCounter++;
         }
@@ -272,35 +274,56 @@ public class MenuScreenController implements Initializable {
                 continue;
             }
             if (event.getCode().equals(keyCodeArrayList.get(i)) && singleFile != null) {
-                if (copyOrMoveStatusFlag == 1) {
+                int sameKeyCodeCounter = 0;
+                for (int j = 0; j < keyCodeArrayList.size(); j++) {
+                    if (keyCodeArrayList.get(i) == keyCodeArrayList.get(j)) {
+//                        sameKeyCodeCounter++;
+                    ////////////
                     try {
-                        savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
-                    } catch (IOException ex) {
-                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                        savePhotoWithCopy(singleFile, pathTargetArrayList.get(j));
+                        System.out.println("savePhotoWithCopy1");
+                    }catch (IOException e) {
+                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, e);
                     }
+                    }
+                    
+                }
+                
+                if (copyOrMoveStatusFlag == 1) {
+                   
+                        
+//                        for (int q = 0; q < sameKeyCodeCounter; q++) {
+//                            try{ 
+//                            savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
+//                            } catch (IOException ex) {
+//                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                            System.out.println("sameKeyCodeCouner: " + sameKeyCodeCounter);
+//                        }
+                        
+                        clearListAfterCopy();
+                        System.out.println("clearListAfterCopy()");
+//                        sameKeyCodeCounter = 0;
+                        return;
+                    
                 }
                 if (copyOrMoveStatusFlag == 2) {
                     savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
                     //////////////////////
-//
-//                    int sameKeyCodeCounter = 0;
-//                    for (int j = 0; j < keyCodeArrayList.size(); j++) {
-//                        if (keyCodeArrayList.get(i) == keyCodeArrayList.get(j)) {
-//                            sameKeyCodeCounter++;
-//                        }
-//                    }
-//                    if (sameKeyCodeCounter == 1) {
-//                        savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
-//                    } else {
-//                        for (int k = 0; k < sameKeyCodeCounter - 1; k++) {
-//                            try {
-//                                savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
-//                            } catch (IOException ex) {
-//                                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                        }
-//                        savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
-//                    }
+
+                    
+                    if (sameKeyCodeCounter == 1) {
+                        savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+                    } else {
+                        for (int k = 0; k < sameKeyCodeCounter - 1; k++) {
+                            try {
+                                savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
+                            } catch (IOException ex) {
+                                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+                    }
                 }
             }
         }
@@ -389,7 +412,13 @@ public class MenuScreenController implements Initializable {
         String targetDirectoryString = directory + "\\" + singleFile.getName();
         Path targetDirectory = Paths.get(targetDirectoryString);
         Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
+        
+        
 
+//        clearListAfterCopy();
+    }
+
+    private void clearListAfterCopy() {
         ArrayList<File> temporaryArrayList = new ArrayList<>();
         for (int i = 0; i < selectedImgsList.size(); i++) {
             if (i == photoSwipCounter) {
@@ -397,6 +426,7 @@ public class MenuScreenController implements Initializable {
             }
             temporaryArrayList.add(selectedImgsList.get(i));
         }
+        
         selectedImgsList = temporaryArrayList;
 
         angleRotation = 0;
