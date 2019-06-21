@@ -20,6 +20,11 @@ public class ScreenSaverFXML extends Application {
     
     LicenceScreenController licenceScreenController;
     MainScreenController mainScreenController;
+    Stage stage;
+    public void requestSetStage(MainScreenController mainScreenController)
+    {
+        mainScreenController.setStage(stage);
+    }
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -35,15 +40,18 @@ public class ScreenSaverFXML extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Photo Box");
         primaryStage.getIcons().add(new Image("resourcePackage/favicon-96x96.png"));
+        stage = primaryStage;
+        mainScreenController = loader.getController();
+//        mainScreenController.setStage(primaryStage);
+        mainScreenController.setScreenSaverFXML(this);
+        mainScreenController.loadScreens();
         
-        MainScreenController mainScreenController = loader.getController();
-        mainScreenController.setStage(primaryStage);
 
-        if (mainScreenController.loadLicenceScreen() == true) {
-            primaryStage.show();
-        } else {
-            primaryStage.hide();
-        }
+//        if (mainScreenController.loadLicenceScreen() == true) {
+//            primaryStage.show();
+//        } else {
+//            primaryStage.hide();
+//        }
        
         scene.getRoot().requestFocus();
        

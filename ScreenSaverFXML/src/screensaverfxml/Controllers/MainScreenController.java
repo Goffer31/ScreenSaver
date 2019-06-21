@@ -29,7 +29,7 @@ public class MainScreenController {
     Stage stage;
     MenuScreenController menuScreenController;
     final ValueContainer valueContainer;
-    
+    ScreenSaverFXML screenSaverFXML;
     private LicenceScreenController licenceScreenController;
     private SystemCheck systemCheck;
 
@@ -37,7 +37,7 @@ public class MainScreenController {
         this.valueContainer = new ValueContainer();
     }
     
-    public boolean loadLicenceScreen() throws IOException {
+    public void loadLicenceScreen() throws IOException {
         Stage stageLoadScreen = null;
          FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/LicenceScreen.fxml"));
             Parent root1 = (Parent) loader.load();
@@ -56,18 +56,16 @@ public class MainScreenController {
 //            System.out.println(systemProperties2);
 //            System.out.println(systemProperties);
 //            System.out.println();
-            OSType detectedType = systemCheck.getOperatingSystemType();
-            systemCheck.trialCheck(detectedType);
-            System.out.println("=================================");
-            return stageLoadScreen.isShowing();
+//            OSType detectedType = systemCheck.getOperatingSystemType();
+//            systemCheck.trialCheck(detectedType);
+//            System.out.println("=================================");
+//            return stageLoadScreen.isShowing();
     }
     
     private void loadMenuScreen() throws IOException {
 
         System.out.println("=================================");
-        OSType detectedType = SystemCheck.getOperatingSystemType();
-        System.out.println(detectedType.toString());
-        SystemCheck.trialCheck(detectedType);
+       
         System.out.println("=================================");
 
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MenuScreen.fxml"));
@@ -78,7 +76,7 @@ public class MainScreenController {
         menuScreenController.setMainScreenController(this);
         setScreen(menuPane);
 
-
+        
     }
 
     public void setScreen(Pane pane) {
@@ -115,12 +113,12 @@ public class MainScreenController {
         this.stage = stage;
         
 
-//        if (menuScreenController == null) {
+        if (menuScreenController == null) {
 //            stage.hide();
-//            return;
-//        }
-//        
-//        stage.show();
+            return;
+        }
+        
+        stage.show();
 
         menuScreenController.setValueContainer(valueContainer);
         
@@ -159,14 +157,27 @@ public class MainScreenController {
         });
         
     }
-
+    
+    public void setScreenSaverFXML(ScreenSaverFXML delegator){
+        screenSaverFXML = delegator;
+    }
+    
     @FXML
     public void initialize() throws IOException {
         
 //        if (loadLicenceScreen() == false) {
-            loadMenuScreen();
 //        }
 //        licenceScreenController.loadLicenceScreen();
+    }
+    
+    public void loadScreens() throws IOException {
+        if(SystemCheck.trialCheck(SystemCheck.getOperatingSystemType())) {
+           loadMenuScreen();
+           screenSaverFXML.requestSetStage(this);
+           menuScreenController.resizeImageInsideWindow();
+       }else{
+           loadLicenceScreen();
+       }
     }
 
 }

@@ -12,7 +12,7 @@
         <URL value="@/resourcePackage/licencescreen.css" />
     </stylesheets>
    <children>
-      <Button layoutX="157.0" layoutY="144.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="87.0" text="OK" />
+      <Button layoutX="157.0" layoutY="144.0" mnemonicParsing="false" onAction="#exit" prefHeight="42.0" prefWidth="87.0" text="OK" />
       <TextArea layoutX="35.0" layoutY="41.0" prefHeight="87.0" prefWidth="331.0" text="Your free Trial is over. &#10;Buy the full version of software">
          <font>
             <Font size="20.0" />

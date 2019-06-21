@@ -5,8 +5,11 @@
  */
 package screensaverfxml.Controllers;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
@@ -22,6 +25,7 @@ public class SystemCheck {
     static boolean fileExists;
     final static String FILENAME = "gbbeta.txt";
     static String PATH;
+    static final long TRIAL_PERIOD_IN_MS = 30000;
 
 
     public enum OSType {
@@ -44,20 +48,33 @@ public class SystemCheck {
         return detectedOS;
     }
     
-    public static void trialCheck(OSType detectedOS) { 
+    public static boolean trialCheck(OSType detectedOS) throws FileNotFoundException, IOException { 
         if(detectedOS == null) {
             getOperatingSystemType();
         }
         
         if(isTrialFileCreated(detectedOS)){
             System.out.println("Trial file gbbeta exists already");
+            File verySecretFile = new File (PATH + "/xoBotohP/" + FILENAME);
+
+            BufferedReader br = new BufferedReader(new FileReader(verySecretFile));
+            String timeStamp;
+            while((timeStamp = br.readLine()) != null){
+            long timeStampLong = Long.parseLong(timeStamp);
+            System.out.println(timeStampLong);
+            if(new Date().getTime() - timeStampLong > TRIAL_PERIOD_IN_MS){
+                return false;
+            }else{
+                return true;
+            }
+            }
+            
         }else{
             System.out.println("Trial file needs to be created.");
-            System.out.println("getenv(%APPDATA%) "+ PATH);
+            System.out.println("Env Variable of the OS is "+ PATH);
             
             File verySecretFile = new File (PATH + "/xoBotohP/" + FILENAME);
             try{
-//                verySecretFile.createNewFile();
                 File directory = new File(PATH + "/xoBotohP");
                 directory.mkdir();
                 FileWriter fw = new FileWriter(PATH + "/xoBotohP/" + FILENAME, true);
@@ -71,7 +88,8 @@ public class SystemCheck {
             } catch (IOException e) {
                 System.out.println("Error while creating file: " + e);
             }
-        };
+        }
+        return true;
     }
 
     public static boolean isTrialFileCreated(OSType detectedOS){
@@ -101,9 +119,4 @@ public class SystemCheck {
             return fileExists;
         }
     }
-    
-    public static void createTrialFile(){
-        
-    }
-    
 }
