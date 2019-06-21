@@ -100,13 +100,15 @@ public class MenuScreenController implements Initializable {
     public void resizeImageInsideWindow() {
         double width = valueContainer.xChecker - valueContainer.xCheckerOffset;
         double height = valueContainer.yChecker - valueContainer.yCheckerOffset;
-        
+                                    System.out.println("menuScreenControler before");
+
         if (width != 0 && height != 0) {
             menuPane.setPrefWidth(width);
             menuPane.setPrefHeight(height);
         }
 
         if (width < imgFieldView.getImage().getWidth() || height < imgFieldView.getImage().getHeight()) {
+
             double scaleX = width / imgFieldView.getImage().getWidth();
             double scaleY = height / imgFieldView.getImage().getHeight();
             System.out.println("scaleX " + scaleX);
@@ -352,6 +354,9 @@ public class MenuScreenController implements Initializable {
     }
 
     private void photoSweep() {
+                            
+
+        
         if (selectedImgsList == null || selectedImgsList.isEmpty()) {
             singleFile = null;
             Image emptyListImage = new Image("/resourcePackage/greybox.png");

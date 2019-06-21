@@ -18,21 +18,36 @@ import javafx.stage.Stage;
  */
 public class ScreenSaverFXML extends Application {
     
+    LicenceScreenController licenceScreenController;
+    MainScreenController mainScreenController;
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
+//        
+//        if(true){
+//            licenceScreenController.loadLicenceScreen();
+//        }
+        
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MainScreen.fxml"));
         Pane mainPane = loader.load();
+
         Scene scene = new Scene(mainPane, 1000, 700);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Photo Box");
         primaryStage.getIcons().add(new Image("resourcePackage/favicon-96x96.png"));
-
+        
         MainScreenController mainScreenController = loader.getController();
         mainScreenController.setStage(primaryStage);
+
+        if (mainScreenController.loadLicenceScreen() == true) {
+            primaryStage.show();
+        } else {
+            primaryStage.hide();
+        }
+       
+        scene.getRoot().requestFocus();
+       
         
-        primaryStage.show();
-        
-       scene.getRoot().requestFocus();
     }
 
     /**
