@@ -92,17 +92,17 @@ public class MainScreenController {
         
         @Override
         public String toString() { 
-            return "xChecker: " + xChecker + ", yChecker: " + yChecker;
+            return "xChecker: " + xChecker + "(offset " + xCheckerOffset + ")" + ", yChecker: " + yChecker + "(offset " + yCheckerOffset + ")";
         }
         
         public void calculateXoffset(double sceneWidth) {
-            if(xCheckerOffset == 0) {
+            if(xCheckerOffset < 0) {
                 xCheckerOffset = xChecker - sceneWidth;
             }
         }
         
         public void calculateYoffset(double sceneHeight) {
-            if(yCheckerOffset == 0 ) {
+            if(yCheckerOffset < 0 ) {
                 yCheckerOffset = yChecker - sceneHeight;
             }
         }

@@ -74,10 +74,11 @@ public class SystemCheck {
             System.out.println("Env Variable of the OS is "+ PATH);
             
             File verySecretFile = new File (PATH + "/xoBotohP/" + FILENAME);
-            try{
-                File directory = new File(PATH + "/xoBotohP");
+                File directory = new File(PATH + "/xoBotohP/");
                 directory.mkdir();
-                FileWriter fw = new FileWriter(PATH + "/xoBotohP/" + FILENAME, true);
+                
+                verySecretFile.createNewFile();
+                FileWriter fw = new FileWriter(PATH + "/xoBotohP/" + FILENAME);
                 BufferedWriter bw = new BufferedWriter(fw);
                 
                 long date = new Date().getTime();
@@ -85,9 +86,7 @@ public class SystemCheck {
                 bw.close();
                         
                 System.out.println("gbbeta.txt file " + verySecretFile.getPath() + " created. File contains " + date);
-            } catch (IOException e) {
-                System.out.println("Error while creating file: " + e);
-            }
+
         }
         return true;
     }
@@ -100,7 +99,7 @@ public class SystemCheck {
             System.out.println(fileExists);
             return fileExists;
         }else if(detectedOS == OSType.Linux){
-            PATH = "~/";
+            PATH = System.getProperty("user.home");
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
             System.out.println(fileExists);
