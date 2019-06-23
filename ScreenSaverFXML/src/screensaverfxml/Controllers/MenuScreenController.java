@@ -8,6 +8,7 @@ package screensaverfxml.Controllers;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -227,23 +228,6 @@ public class MenuScreenController implements Initializable {
         }
     }
 
-    @FXML
-    public void imgDoubleClick(MouseEvent mouseEvent) throws MalformedURLException {
-        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-            if(mouseEvent.getClickCount() == 2) {
-                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"),
-                        new ExtensionFilter(".jpg / .jpeg", "*.jpeg", "*.jpg"),
-                        new ExtensionFilter(".png", "*.png"));
-                selectedImgsList = fileChooser.showOpenMultipleDialog(null);
-                if(selectedImgsList != null) {
-                        singleFile = selectedImgsList.get(numberOfPhoto);
-                        image = new Image(singleFile.toURL().toString(),
-                        900, 400,
-                        true, true, true);
-                        imgFieldView.setImage(image);    
-                    } else {
-                    System.out.println("No File Selected");
-                    
     public void getNewImageHandler(KeyEvent event) {
         /**
          * Code responsible for switching photos
@@ -336,25 +320,6 @@ public class MenuScreenController implements Initializable {
         }
     }
     
-    @FXML
-    public void getNewImage(KeyEvent event) {
-//        zrobić zabezpieczenie przed cofnięciem na pozycji 0
-        if(event.getCode().equals(KeyCode.I)) {
-            addKeyHandlerCounter++;
-            singleFile = selectedImgsList.get(addKeyHandlerCounter);
-            image = new Image(singleFile.toURI().toString(),
-            900, 400,
-            true, true, true);
-            imgFieldView.setImage(image);
-        }
-        if(event.getCode().equals(KeyCode.D)) {
-            addKeyHandlerCounter--;
-            singleFile = selectedImgsList.get(addKeyHandlerCounter);
-            image = new Image(singleFile.toURI().toString(),
-            900, 400,
-            true, true, true);
-            imgFieldView.setImage(image);
-        }
     public void imageToFile(Image image) throws IOException {
 
         if (singleFile == null) {
@@ -420,26 +385,6 @@ public class MenuScreenController implements Initializable {
         image = new Image(singleFile.toURI().toString());
         imgFieldView.setImage(image);
         resizeImageInsideWindow();
-    }
-
-    @FXML
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        menuPane.sceneProperty().addListener(new ChangeListener<Scene>() {
-            @Override
-            public void changed(ObservableValue<? extends Scene> observable, Scene oldValue, Scene newValue) {
-                if(newValue != null) {
-                    menuPane.requestFocus();
-                }
-            }
-        });
-        menuPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                imageRotation(event);
-                getNewImage(event);
-            }
-        });
     }
     
 
