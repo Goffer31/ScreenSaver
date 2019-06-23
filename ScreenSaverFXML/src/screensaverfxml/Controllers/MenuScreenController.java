@@ -10,208 +10,196 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-<<<<<<< HEAD
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.scene.layout.StackPane;
-import javafx.scene.transform.Rotate;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
+import screensaverfxml.Controllers.MainScreenController.ValueContainer;
 
 /**
  *
  * @author root
  */
-public class MenuScreenController implements Initializable{
-    
-    /*
-            TO DO:
-    1. Połączyć imageRotation i getNewImage tak żeby po kliknięciu przycisków działały (initializer)
-    2. Zapis plików do folderu
-    3. Wybieranie pod jakimi przyskami znajdują się w/w opcje, w nowym opcje ala settings
-    4. Rozszerzenie tego do 4 folderów
-    5. Zrobić transparentne przyciski wyświetlające się po wciśnięciu klawysza np. crtl lub alt
-    */
-    
-    private MainScreenController mainScreenController;
-    
-   @FXML
-   Pane menuPane;
-   @FXML
-   ImageView imgFieldView;
-   @FXML
-   ListView listView;
-   @FXML
-   Label countLabel;
-   @FXML
-   Label photoNameLabel;
-   @FXML
-   Label photoSaveStatusLabel;
-   
-    List<File> selectedImgsList;
-    File singleFile;
-    Image image;
-    int numberOfPhoto = 0;
-    int addKeyHandlerCounter = 0;
-    final FileChooser fileChooser = new FileChooser();
-
-    public MenuScreenController() {
-    }
-    
-    
-public class MenuScreenController{
- 
-    @FXML
-    private StackPane stackImgPane;
+public class MenuScreenController implements Initializable {
     @FXML
     private ImageView imgFieldView;
+    @FXML
+    private Pane menuPane;
     
+    
+    private final String numberRegex = "[0-9]";
+
     Image image;
     double angleRotation;
     int photoSwipCounter = 0;
+    int rotationsCounter = 0;
 
-   private MainScreenController mainScreenController;
-   private SettingsScreenController settingsScreenController;
-   
-   final FileChooser fileChooser = new FileChooser();   
-   
-   List<File> selectedImgsList;
+    private MainScreenController mainScreenController;
+    private SettingsScreenController settingsScreenController;
+    private ValueContainer valueContainer;
+
+    final FileChooser fileChooser = new FileChooser();
+
+    List<File> selectedImgsList;
     File singleFile;
     File selectedDirectory = null;
     ArrayList<String> keyCodeStringArrayList;
     ArrayList<KeyCode> keyCodeArrayList;
     ArrayList<String> pathTargetArrayList;
     int copyOrMoveStatusFlag = 1;
-    
-    void setMainController(MainScreenController mainScreenController) {
+
+    void setMainScreenController(MainScreenController mainScreenController) {
         this.mainScreenController = mainScreenController;
     }
-    
-     public void setCopyOrMoveStatusFlag(int copyOrMoveStatusFlag) {
+
+    public void setCopyOrMoveStatusFlag(int copyOrMoveStatusFlag) {
         this.copyOrMoveStatusFlag = copyOrMoveStatusFlag;
     }
     
-    
-//    Method to make image on the center of the screen
-    public void centerImage(ImageView imgView) {
-        Image img = imgView.getImage();
-        if (img != null) {
-            double imageWidth;
-            double imageHeight;
-            double ratioX = imgView.getFitHeight() / img.getWidth();
-            double ratioY = imgView.getFitWidth() / img.getHeight();
-            double reducCoeff;
-            
-            if (ratioX >= ratioY) {
-                reducCoeff = ratioY;
+    @FXML
+    public void setFullScreenMenuItem(ActionEvent event) {
+        mainScreenController.stage.setFullScreen(!mainScreenController.stage.isFullScreen());
+    }
+
+    public void setValueContainer(ValueContainer valueContainer) {
+        this.valueContainer = valueContainer;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Image startAppImage = new Image("/resourcePackage/greybox.png");
+        imgFieldView.setImage(startAppImage);
+    }
+
+    public void resizeImageInsideWindow() {
+        double width = valueContainer.xChecker - valueContainer.xCheckerOffset;
+        double height = valueContainer.yChecker - valueContainer.yCheckerOffset;
+                                    System.out.println("menuScreenControler before");
+
+        if (width != 0 && height != 0) {
+            menuPane.setPrefWidth(width);
+            menuPane.setPrefHeight(height);
+        }
+
+        if (width < imgFieldView.getImage().getWidth() || height < imgFieldView.getImage().getHeight()) {
+
+            double scaleX = width / imgFieldView.getImage().getWidth();
+            double scaleY = height / imgFieldView.getImage().getHeight();
+            System.out.println("scaleX " + scaleX);
+            System.out.println("scaleY " + scaleY);
+
+            double scale;
+            if (scaleX > scaleY) {
+                scale = scaleY;
             } else {
-                reducCoeff = ratioX;
+                scale = scaleX;
             }
-            
-            imageWidth = img.getWidth() * reducCoeff;
-            imageHeight = img.getHeight() * reducCoeff;
-            imgView.setX((imgView.getFitWidth() - imageWidth) / 2);
-            imgView.setY((imgView.getFitHeight() - imageHeight) / 2);
-            System.out.println("SetX" + ((imgView.getFitWidth() - imageWidth) / 2));
-            System.out.println("SetY" + ((imgView.getFitHeight() - imageHeight) / 2));
+           
+            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
+            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
+
+            imgFieldView.setX((width - (imgFieldView.getImage().getWidth() * scale)) / 2);
+            imgFieldView.setY((height - (imgFieldView.getImage().getHeight() * scale)) / 2);
+        } else {
+            imgFieldView.setFitWidth(imgFieldView.getImage().getWidth());
+            imgFieldView.setFitHeight(imgFieldView.getImage().getHeight());
+            imgFieldView.setX((width - imgFieldView.getImage().getWidth()) / 2);
+            imgFieldView.setY((height - imgFieldView.getImage().getHeight()) / 2);
         }
     }
-     
-     /**
-      * Method generating keyCodes basic on String ArrayList with paths
-      * @param pathArrayList
-      * @return 
-      */
-     
+    
+
     @FXML
-    public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> pathArrayList) {
+    public void showSout(MouseEvent mouseEvent) {
+        System.out.println("Mouse released showSout");
+    }
+
+    /**
+     * Method generating keyCodes basic on String ArrayList with paths
+     *
+     * @param stringKeyArrayList
+     * @return
+     */
+    @FXML
+    public ArrayList<KeyCode> stringToKeyCodeGenerator(ArrayList<String> stringKeyArrayList) {
         String temporaryString;
         KeyCode temporaryKeyCode;
-        
+
         keyCodeArrayList = new ArrayList<>();
-        
-        for (int i = 0; i < pathArrayList.size(); i++) {
-            temporaryString = pathArrayList.get(i);
+
+        for (int i = 0; i < stringKeyArrayList.size(); i++) {
+            temporaryString = stringKeyArrayList.get(i);
             if (temporaryString != null) {
-                System.out.println("temporaryString: " + temporaryString);
-                temporaryKeyCode = KeyCode.valueOf(temporaryString);
+                System.out.println("temporaryString: " + temporaryString + " size of temporaryString: " + temporaryString.length());
+                if (temporaryString.matches(numberRegex)) {
+                    temporaryKeyCode = KeyCode.valueOf("DIGIT" + temporaryString);
+                } else {
+                    temporaryKeyCode = KeyCode.valueOf(temporaryString);
+                }
                 keyCodeArrayList.add(temporaryKeyCode);
             } else {
                 keyCodeArrayList.add(null);
             }
-
-            
         }
-        
+        System.out.println("keyCodeArrayList contains: " + keyCodeArrayList);
         return keyCodeArrayList;
     }
 
-    
     /**
      * Method assigns getted sources for photo save
+     *
      * @param pathArrayList
-     * @return 
+     * @return
      */
     @FXML
     public ArrayList<String> pathsGenerator(ArrayList<String> pathArrayList) {
         String temporaryString;
-        
+
         pathTargetArrayList = new ArrayList<>();
-        
-        for(int i = 0; i < pathArrayList.size(); i++) {
+
+        for (int i = 0; i < pathArrayList.size(); i++) {
             temporaryString = pathArrayList.get(i);
-            if(temporaryString != null) {
+            if (temporaryString != null) {
                 pathTargetArrayList.add(temporaryString);
             } else {
                 pathTargetArrayList.add(null);
             }
         }
-        
+        System.out.println("pathTargetArrayList contains: " + pathTargetArrayList);
         return pathTargetArrayList;
     }
-    
-    
+
     @FXML
     public void focusAndLoadFirstImage() throws MalformedURLException {
         imageViewRequestFocus();
         selectedImgsList = new ArrayList<>();
         loadImageOnScreen(selectedImgsList);
     }
-    
+
     @FXML
     public void pathAndKeyGeneratorInitializer() {
         keyCodeStringArrayList = new ArrayList<>();
@@ -226,11 +214,11 @@ public class MenuScreenController{
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
             singleFile = selectedImagesList.get(0);
-            image = new Image(singleFile.toURL().toString(),
-                    900, 400,
-                    true, true, true);
+            System.out.println("singleFile contains: " + singleFile);
+            image = new Image(singleFile.toURL().toString());
             imgFieldView.setImage(image);
-            System.out.println(singleFile.getName());
+            photoSweep();
+            System.out.println("loadImageOnScreen Invocation: " + singleFile.getName());
             for (int i = 0; i < selectedImagesList.size(); i++) {
                 System.out.println(selectedImagesList.get(i).getName());
             }
@@ -238,6 +226,7 @@ public class MenuScreenController{
             System.out.println("No File Selected");
         }
     }
+
     @FXML
     public void imgDoubleClick(MouseEvent mouseEvent) throws MalformedURLException {
         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
@@ -258,9 +247,11 @@ public class MenuScreenController{
     public void getNewImageHandler(KeyEvent event) {
         /**
          * Code responsible for switching photos
+         * accessed from MenuScreen.fxml
          */
         imgFieldView.requestFocus();
-        System.out.println(singleFile.getName());
+
+        System.out.println("getNewImageHandlerInvoked");
         
         if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
             photoSwipCounter++;
@@ -269,16 +260,12 @@ public class MenuScreenController{
         if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.KP_LEFT)) {
             photoSwipCounter--;
         }
-        
+
         photoSweep();
-        
+
         /**
          * Code responsible for rotate the image
          */
-        
-//        wykorzystac SnapshotsParameters do obracania i metodę imgFieldView.snapshot moze zeby cos pokombinowac 
-//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated?rq=1
-
         if (event.getCode().equals(KeyCode.PERIOD)) {
             angleRotation += 90;
             imgFieldView.setRotate(angleRotation);
@@ -290,35 +277,56 @@ public class MenuScreenController{
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
-        //---***---***---***---***---***---***---***---***---***---***---***---*
-        
+        //---***---***---***---***---***---***---***---***---***---***---*
         /**
-         * Code responsible for saving photos into max four different locations 
+         * Code responsible for saving photos into max four different locations
          * using customize keyCode to write folders under buttons
          */
-        
+        if (keyCodeArrayList == null) {
+            return;
+        }
         for (int i = 0; i < keyCodeArrayList.size(); i++) {
-            if(keyCodeArrayList.get(i) == null) {
+            if (keyCodeArrayList.get(i) == null) {
                 continue;
             }
-            if (event.getCode().equals(keyCodeArrayList.get(i))) {
-                if (copyOrMoveStatusFlag == 1) {
-                    try {
-                        savePhotoWithCopy(singleFile, pathTargetArrayList.get(i));
-                    } catch (IOException ex) {
-                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            if (event.getCode().equals(keyCodeArrayList.get(i)) && singleFile != null) {
+                String patchContainer = null;
+                for (int j = 0; j < keyCodeArrayList.size(); j++) {
+                    if (keyCodeArrayList.get(i) == keyCodeArrayList.get(j)) {
+                        if (copyOrMoveStatusFlag == 1) {
+                            try {
+                                savePhotoWithCopy(singleFile, pathTargetArrayList.get(j));
+                                System.out.println("savePhotoWithCopy1");
+                            } catch (IOException e) {
+                                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, e);
+                            }
+                        }
+                        if (copyOrMoveStatusFlag == 2) {
+                            try {
+                                savePhotoWithCopy(singleFile, pathTargetArrayList.get(j));
+                                patchContainer = pathTargetArrayList.get(j);
+                                System.out.println("savePhotoWithCopy2");
+                            } catch (IOException e) {
+                                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, e);
+                            }
+                            System.out.println("savePhotoWithDelete1");
+                        }
                     }
                 }
+                if (copyOrMoveStatusFlag == 1) {
+                    clearListAfterCopy();
+                    System.out.println("clearListAfterCopy()");
+                    return;
+                }
                 if (copyOrMoveStatusFlag == 2) {
-                    savePhotoAndDelete(singleFile, pathTargetArrayList.get(i));
+                    savePhotoAndDelete(singleFile, patchContainer);
+                    clearListAfterCopy();
+                    return;
                 }
             }
         }
-        
-//        centerImage(imgFieldView);
-        
     }
-    
+
     @FXML
     public void imageRotation(KeyEvent event) {
         if(event.getCode().equals(KeyCode.R)){
@@ -348,46 +356,71 @@ public class MenuScreenController{
             imgFieldView.setImage(image);
         }
     public void imageToFile(Image image) throws IOException {
+
+        if (singleFile == null) {
+            return;
+        }
+
         BufferedImage bufferedImage = ImageIO.read(singleFile);
-        ImageIO.write(rotateClockwise90(bufferedImage), "jpg", new File(singleFile.getAbsolutePath() + "2"));
+
+        while (angleRotation < 0 || angleRotation >= 360) {
+            if (angleRotation < 0) {
+                angleRotation += 360;
+            } else {
+                angleRotation -= 360;
+            }
+        }
+
+        int temporaryInt = (int) angleRotation / 90;
+
+        for (int i = 0; i < temporaryInt; i++) {
+            bufferedImage = rotateClockwise90(bufferedImage);
+        }
+
+        ImageIO.write(bufferedImage, "png", new File(singleFile.getAbsolutePath()));
     }
-    
+
     public static BufferedImage rotateClockwise90(BufferedImage src) {
-    int width = src.getWidth();
-    int height = src.getHeight();
+        int width = src.getWidth();
+        int height = src.getHeight();
 
-    BufferedImage dest = new BufferedImage(height, width, src.getType());
-    
-    Graphics2D graphics2D = dest.createGraphics();
-    graphics2D.translate((height - width) / 2, (height - width) / 2);
-    graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
-    graphics2D.drawRenderedImage(src, null);
+        BufferedImage dest = new BufferedImage(height, width, src.getType());
 
-    return dest;
-}
+        Graphics2D graphics2D = dest.createGraphics();
+        graphics2D.translate((height - width) / 2, (height - width) / 2);
+        graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
+        graphics2D.drawRenderedImage(src, null);
+
+        return dest;
+    }
 
     private void photoSweep() {
+                            
+
+        
+        if (selectedImgsList == null || selectedImgsList.isEmpty()) {
+            singleFile = null;
+            Image emptyListImage = new Image("/resourcePackage/greybox.png");
+            imgFieldView.setImage(emptyListImage);
+            resizeImageInsideWindow();
+            return;
+        }
+
         if (photoSwipCounter < 0) {
             photoSwipCounter = selectedImgsList.size() - 1;
         } else if (photoSwipCounter >= selectedImgsList.size()) {
             photoSwipCounter = 0;
         }
-        
+
         /**
          * set greybox logo if list is empty
          */
-        if(selectedImgsList == null) {
-//            singleFile
-        }
-        
+        System.out.println("sizeOfSelectedImgsList: " + selectedImgsList.size());
         singleFile = selectedImgsList.get(photoSwipCounter);
-        
-        image = new Image(singleFile.toURI().toString(),
-                900, 400,
-                true, true, true);
+        image = new Image(singleFile.toURI().toString());
         imgFieldView.setImage(image);
+        resizeImageInsideWindow();
     }
- 
 
     @FXML
     @Override
@@ -520,37 +553,43 @@ public class MenuScreenController{
         System.out.println("Directory choosed: " + selectedDirectory.getAbsolutePath());
         return selectedDirectory.getAbsolutePath();
     }
-    
+
     @FXML
     private void savePhotoWithCopy(File singleFile, String directory) throws IOException {
+        imageToFile(imgFieldView.getImage());
         Path sourceDirectory = Paths.get(singleFile.getAbsolutePath());
         String targetDirectoryString = directory + "\\" + singleFile.getName();
-        imageToFile(imgFieldView.getImage());
         Path targetDirectory = Paths.get(targetDirectoryString);
-        Files.copy(sourceDirectory, targetDirectory);
-        
+        Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    @FXML
+    public void savePhotoAndDelete(File singleFile, String directory) {
+        try {
+            imageToFile(imgFieldView.getImage());
+        } catch (IOException ex) {
+            Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
+        System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
+        singleFile.renameTo(new File(fileNameAndPathToSave));
+        singleFile.delete();
+    }
+
+    private void clearListAfterCopy() {
         ArrayList<File> temporaryArrayList = new ArrayList<>();
-        
-        for(int i = 0; i < selectedImgsList.size(); i++) {
-            if(i == photoSwipCounter) { 
+        for (int i = 0; i < selectedImgsList.size(); i++) {
+            if (i == photoSwipCounter) {
                 continue;
             }
             temporaryArrayList.add(selectedImgsList.get(i));
         }
+
         selectedImgsList = temporaryArrayList;
-        
-        
-        
-        photoSweep();
-    }
-    
-    @FXML
-    public void savePhotoAndDelete(File singleFile, String directory) {
-        String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
-        System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
-        singleFile.renameTo(new File(fileNameAndPathToSave));
-        selectedImgsList.get(photoSwipCounter).delete();
-        photoSwipCounter++;
+
+        angleRotation = 0;
+        imgFieldView.setRotate(angleRotation);
+
         photoSweep();
     }
 
@@ -558,11 +597,10 @@ public class MenuScreenController{
     /**
      * Code responsible for load settings window
      */
-    
     @FXML
     MenuItem settingsMenuItem;
     Stage stage;
-    
+
     @FXML
     public void showSettingsWindow(ActionEvent event) {
         try {
@@ -572,6 +610,7 @@ public class MenuScreenController{
                 stage = new Stage();
                 stage.setTitle("Settings");
                 stage.setScene(new Scene(root1));
+                stage.initStyle(StageStyle.UNDECORATED);
                 settingsScreenController = fXMLLoader.getController();
                 settingsScreenController.setMenuScreenController(this);
             }
@@ -580,48 +619,10 @@ public class MenuScreenController{
             System.out.println("Can't load settings window");
         }
     }
-    
+
     @FXML
     public void exit() {
         Platform.exit();
     }
 
 }
-
-//Centering image on the window
-//https://stackoverflow.com/questions/20014787/how-do-i-center-an-image-view-in-an-anchor-pane?rq=1
-
-//Creating a settings window
-//https://www.youtube.com/watch?v=5NM27PP5rME
-
-//Key Listener
-//https://www.programcreek.com/java-api-examples/?class=javafx.scene.Scene&method=setOnKeyPressed
-//https://www.youtube.com/watch?v=UotiVqAjhDY
-//https://www.youtube.com/watch?v=MZAFix_-9UI <- best 
-//https://www.youtube.com/watch?v=bUxwGl7W9-E
-//https://www.youtube.com/watch?v=xwWARVJB5g0
-
-
-//Save files
-//https://stackoverflow.com/questions/4871051/getting-the-current-working-directory-in-java <---- very good
-//https://www.youtube.com/watch?v=F4b55du_Nic <------- very good 
-//https://stackoverflow.com/questions/6366743/saving-files-to-a-specific-directory-in-java
-//https://stackoverflow.com/questions/26693550/how-can-i-save-a-file-in-the-current-directory
-//https://stackoverflow.com/questions/16239130/java-user-dir-property-what-exactly-does-it-mean
-//https://www.genuinecoder.com/save-files-javafx-filechooser/
-//https://www.tutorialspoint.com/java/io/java_io_file.htm
-//https://stackoverflow.com/questions/10083447/selecting-folder-destination-in-java
-//https://stackoverflow.com/questions/20958668/jfilechooser-getcurrentdirectory-to-string
-//https://docs.oracle.com/javase/6/docs/api/java/io/File.html
-//https://www.rgagnon.com/javadetails/java-0370.html
-//http://www.java2s.com/Code/Java/Swing-JFC/SelectadirectorywithaJFileChooser.htm
-//https://stackoverflow.com/questions/14967449/read-from-a-file-that-is-in-the-same-folder-as-the-jar-file
-
-//Rotation
-//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated/54142453
-//https://stackoverflow.com/questions/33613664/javafx-drawimage-rotated
-
-//Visual side
-//https://www.youtube.com/watch?v=1myTZQowNZw
-
-

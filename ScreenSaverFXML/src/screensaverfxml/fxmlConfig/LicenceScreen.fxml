@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="licenceScreenPane" prefHeight="200.0" prefWidth="400.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.LicenceScreenController">
+    <stylesheets>
+        <URL value="@/resourcePackage/licencescreen.css" />
+    </stylesheets>
+   <children>
+      <Button layoutX="157.0" layoutY="144.0" mnemonicParsing="false" onAction="#exit" prefHeight="42.0" prefWidth="87.0" text="OK" />
+      <TextArea layoutX="35.0" layoutY="41.0" prefHeight="87.0" prefWidth="331.0" text="Your free Trial is over. &#10;Buy the full version of software">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextArea>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7a8690" height="200.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7a8690" height="200.0" layoutX="390.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7a8690" height="10.0" layoutX="-2.0" layoutY="190.0" stroke="TRANSPARENT" strokeType="INSIDE" width="400.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#7a8690" height="10.0" layoutY="-1.0" stroke="TRANSPARENT" strokeType="INSIDE" width="400.0" />
+   </children>
+</AnchorPane>
