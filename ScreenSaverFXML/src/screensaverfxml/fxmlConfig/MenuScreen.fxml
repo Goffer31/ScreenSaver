@@ -8,7 +8,7 @@
 
 <Pane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDetected="#showSout" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensaverfxml.Controllers.MenuScreenController">
    <children>
-       <ImageView fx:id="imgFieldView" fitHeight="675.0" fitWidth="1000.0" layoutX="-1.0" layoutY="25.0" onKeyPressed="#getNewImageHandler" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imgFieldView" fitHeight="675.0" fitWidth="1000.0" layoutX="-1.0" layoutY="25.0" onKeyPressed="#getNewImageHandler" pickOnBounds="true" preserveRatio="true" />
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">

@@ -51,15 +51,6 @@ public class MainScreenController {
             
             stageLoadScreen.show();
             System.out.println("=================================");
-//            String systemProperties = System.getProperty("os.name");
-//            String systemProperties2 = systemCheck.getOperatingSystemType().toString();
-//            System.out.println(systemProperties2);
-//            System.out.println(systemProperties);
-//            System.out.println();
-//            OSType detectedType = systemCheck.getOperatingSystemType();
-//            systemCheck.trialCheck(detectedType);
-//            System.out.println("=================================");
-//            return stageLoadScreen.isShowing();
     }
     
     private void loadMenuScreen() throws IOException {

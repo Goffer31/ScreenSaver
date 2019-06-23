@@ -37,6 +37,7 @@ public class ScreenSaverFXML extends Application {
         Pane mainPane = loader.load();
 
         Scene scene = new Scene(mainPane, 1000, 700);
+//        scene.getStylesheets().add(getClass().getResource("mainStyleSheet.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Photo Box");
         primaryStage.getIcons().add(new Image("resourcePackage/favicon-96x96.png"));
