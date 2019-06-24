@@ -25,7 +25,7 @@ public class SystemCheck {
     static boolean fileExists;
     final static String FILENAME = "gbbeta.txt";
     static String PATH;
-    static final long TRIAL_PERIOD_IN_MS = 30000000;
+    static final long TRIAL_PERIOD_IN_MS = 2419200000l;
 
 
     public enum OSType {
