@@ -87,13 +87,13 @@ public class MainScreenController {
         }
         
         public void calculateXoffset(double sceneWidth) {
-            if(xCheckerOffset < 0) {
+            if(xCheckerOffset <= 0) {
                 xCheckerOffset = xChecker - sceneWidth;
             }
         }
         
         public void calculateYoffset(double sceneHeight) {
-            if(yCheckerOffset < 0 ) {
+            if(yCheckerOffset <= 0 ) {
                 yCheckerOffset = yChecker - sceneHeight;
             }
         }
@@ -165,6 +165,10 @@ public class MainScreenController {
         if(SystemCheck.trialCheck(SystemCheck.getOperatingSystemType())) {
            loadMenuScreen();
            screenSaverFXML.requestSetStage(this);
+           stage.setMaxHeight(0);
+           stage.setMaxHeight(Double.MAX_VALUE);
+           stage.setMaxWidth(0);
+           stage.setMaxWidth(Double.MAX_VALUE);
            menuScreenController.resizeImageInsideWindow();
        }else{
            loadLicenceScreen();
