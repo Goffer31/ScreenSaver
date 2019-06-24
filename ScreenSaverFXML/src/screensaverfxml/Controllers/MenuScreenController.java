@@ -9,7 +9,10 @@ import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,7 +27,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -573,35 +575,48 @@ public class MenuScreenController implements Initializable {
     }
     
     @FXML
-    public void showHelpWEBDocument(ActionEvent event) throws IOException, URISyntaxException {
-        if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-//            String path = "/resourcePackage/PhotoBox.html";
-//            String base = "/";
-//            String relativePath = new File(base).toURI().relativize(new File(path).toURI()).getPath();
-//            File f = new File("/resourcePackage/PhotoBox.html");
-//            
-//            System.out.println(f.getAbsolutePath());
-////            String newURL = new URL(URL, relativePath);
-//            System.out.println("relativePath " + relativePath);
-////            Desktop.getDesktop().browse(new URI(relativePath));
-//            File a = new File("/resourcePackage/PhotoBox.html");
-//            File parentFolder = new File(a.getParent());
-//            File b = new File(parentFolder, "../resourcePackage/PhotoBox.html");
-//            String absolute = b.getCanonicalPath();
-//            System.out.println("absolute: " + absolute);
-//            
-            URL url = MenuScreenController.class.getResource("/resourcePackage/PhotoBox.html");
-            URI uri;
-            uri = url.toURI();
-            System.out.println("url "  + url);
-            System.out.println("uri "  + uri);
-            Desktop.getDesktop().browse(uri);
+    public void copyResourcesAndLoad() {
+        File file = null;
+        String resource = "/resourcePackage/PhotoBox.html";
+        URL res = getClass().getResource(resource);
+        if (res.getProtocol().equals("jar")) {
+            try {
+                InputStream input = getClass().getResourceAsStream(resource);
+                    
+                
+                file = new File(SystemCheck.returnApplicationPath()+ "/tempfile.html");
+                System.out.println(file.getAbsolutePath());
+                OutputStream out = new FileOutputStream(file);
+                int read;
+                byte[] bytes = new byte[1024];
+
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                out.close();
+                String path = file.getAbsolutePath();
+                System.out.println(URI.create(path.replace("\\", "/")));
+
+                Desktop.getDesktop().browse(URI.create(path.replace("\\", "/")));
+                file.deleteOnExit();
+            } catch (IOException ex) {
+                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            //this will probably work in your IDE, but not from a JAR
+            file = new File(res.getFile());
         }
+
+        if (file != null && !file.exists()) {
+            throw new RuntimeException("Error: File " + file + " not found!");
+        }
+
     }
 
     @FXML
     public void exit() {
         Platform.exit();
     }
+
 
 }

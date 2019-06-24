@@ -118,4 +118,31 @@ public class SystemCheck {
             return fileExists;
         }
     }
+    
+    public static String returnApplicationPath(OSType detectedOS) {
+        File tmpDir;
+        if (detectedOS == OSType.Windows) {
+            PATH = System.getenv("APPDATA");
+            tmpDir = new File(PATH + "/xoBotohP/");
+
+            return tmpDir.toString();
+        } else if (detectedOS == OSType.Linux) {
+            PATH = System.getProperty("user.home");
+            tmpDir = new File(PATH + "/xoBotohP/");
+
+        } else if (detectedOS == OSType.MacOS) {
+            PATH = "~/Library";
+            tmpDir = new File(PATH + "/xoBotohP/");
+
+        } else {
+            PATH = "~/";
+            tmpDir = new File(PATH + "/xoBotohP/");
+        }
+        return tmpDir.toString();
+    }
+    
+    
+    public static String returnApplicationPath(){
+        return returnApplicationPath(getOperatingSystemType());
+    }
 }

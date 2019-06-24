@@ -58,6 +58,8 @@ public class ScreenSaverFXML extends Application {
 //        }
        
         scene.getRoot().requestFocus();
+        
+        
        
         
     }
