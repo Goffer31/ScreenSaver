@@ -6,7 +6,6 @@
 package screensaverfxml.Controllers;
 
 import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -18,50 +17,34 @@ import javafx.stage.Stage;
  * @author root
  */
 public class ScreenSaverFXML extends Application {
-    
+
     LicenceScreenController licenceScreenController;
     MainScreenController mainScreenController;
     MenuScreenController menuScreenController;
     Stage stage;
-    
-    public void requestSetStage(MainScreenController mainScreenController)
-    {
+
+    public void requestSetStage(MainScreenController mainScreenController) {
         mainScreenController.setStage(stage);
     }
-  
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        
-//        if(true){
-//            licenceScreenController.loadLicenceScreen();
-//        }
-        
+
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/screensaverfxml/fxmlConfig/MainScreen.fxml"));
         Pane mainPane = loader.load();
 
         Scene scene = new Scene(mainPane, 1000, 700);
-//        scene.getStylesheets().add(getClass().getResource("mainStyleSheet.css").toExternalForm());
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Photo Box");
         primaryStage.getIcons().add(new Image("resourcePackage/favicon-96x96.png"));
+
         stage = primaryStage;
         mainScreenController = loader.getController();
-//        mainScreenController.setStage(primaryStage);
         mainScreenController.setScreenSaverFXML(this);
         mainScreenController.loadScreens();
-        
 
-//        if (mainScreenController.loadLicenceScreen() == true) {
-//            primaryStage.show();
-//        } else {
-//            primaryStage.hide();
-//        }
-       
         scene.getRoot().requestFocus();
-        
-        
-       
-        
     }
 
     /**
@@ -70,5 +53,5 @@ public class ScreenSaverFXML extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

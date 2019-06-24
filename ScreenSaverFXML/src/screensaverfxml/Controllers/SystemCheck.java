@@ -27,122 +27,111 @@ public class SystemCheck {
     static String PATH;
     static final long TRIAL_PERIOD_IN_MS = 2419200000l;
 
-
     public enum OSType {
         Windows, MacOS, Linux, Other
     };
-    
-    public static OSType getOperatingSystemType() { 
-        if(detectedOS == null) {
+
+    public static OSType getOperatingSystemType() {
+        if (detectedOS == null) {
             String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-            if((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+            if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
                 detectedOS = OSType.MacOS;
-            } else if(OS.indexOf("win") >= 0) {
+            } else if (OS.indexOf("win") >= 0) {
                 detectedOS = OSType.Windows;
-            } else if(OS.indexOf("nux") >= 0) {
+            } else if (OS.indexOf("nux") >= 0) {
                 detectedOS = OSType.Linux;
-            } else { 
+            } else {
                 detectedOS = OSType.Other;
             }
         }
         return detectedOS;
     }
-    
-    public static boolean trialCheck(OSType detectedOS) throws FileNotFoundException, IOException { 
-        if(detectedOS == null) {
+
+    public static boolean trialCheck(OSType detectedOS) throws FileNotFoundException, IOException {
+        if (detectedOS == null) {
             getOperatingSystemType();
         }
-        
-        if(isTrialFileCreated(detectedOS)){
+
+        if (isTrialFileCreated(detectedOS)) {
             System.out.println("Trial file gbbeta exists already");
-            File verySecretFile = new File (PATH + "/xoBotohP/" + FILENAME);
+            File verySecretFile = new File(PATH + "/xoBotohP/" + FILENAME);
 
             BufferedReader br = new BufferedReader(new FileReader(verySecretFile));
             String timeStamp;
-            while((timeStamp = br.readLine()) != null){
-            long timeStampLong = Long.parseLong(timeStamp);
-            System.out.println(timeStampLong);
-            if(new Date().getTime() - timeStampLong > TRIAL_PERIOD_IN_MS){
-                return false;
-            }else{
-                return true;
+            while ((timeStamp = br.readLine()) != null) {
+                long timeStampLong = Long.parseLong(timeStamp);
+                if (new Date().getTime() - timeStampLong > TRIAL_PERIOD_IN_MS) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
-            }
-            
-        }else{
+
+        } else {
             System.out.println("Trial file needs to be created.");
-            System.out.println("Env Variable of the OS is "+ PATH);
-            
-            File verySecretFile = new File (PATH + "/xoBotohP/" + FILENAME);
-                File directory = new File(PATH + "/xoBotohP/");
-                directory.mkdir();
-                
-                verySecretFile.createNewFile();
-                FileWriter fw = new FileWriter(PATH + "/xoBotohP/" + FILENAME);
-                BufferedWriter bw = new BufferedWriter(fw);
-                
-                long date = new Date().getTime();
-                bw.write(""+date);
-                bw.close();
-                        
-                System.out.println("gbbeta.txt file " + verySecretFile.getPath() + " created. File contains " + date);
+            System.out.println("Env Variable of the OS is " + PATH);
+
+            File verySecretFile = new File(PATH + "/xoBotohP/" + FILENAME);
+            File directory = new File(PATH + "/xoBotohP/");
+            directory.mkdir();
+
+            verySecretFile.createNewFile();
+            FileWriter fw = new FileWriter(PATH + "/xoBotohP/" + FILENAME);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            long date = new Date().getTime();
+            bw.write("" + date);
+            bw.close();
+
+            System.out.println("gbbeta.txt file " + verySecretFile.getPath() + " created. File contains " + date);
 
         }
         return true;
     }
 
-    public static boolean isTrialFileCreated(OSType detectedOS){
-        if(detectedOS == OSType.Windows){
+    public static boolean isTrialFileCreated(OSType detectedOS) {
+        if (detectedOS == OSType.Windows) {
             PATH = System.getenv("APPDATA");
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
-            System.out.println(fileExists);
             return fileExists;
-        }else if(detectedOS == OSType.Linux){
+        } else if (detectedOS == OSType.Linux) {
             PATH = System.getProperty("user.home");
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
-            System.out.println(fileExists);
             return fileExists;
-        }else if(detectedOS == OSType.MacOS){
+        } else if (detectedOS == OSType.MacOS) {
             PATH = "~/Library";
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
-            System.out.println(fileExists);
             return fileExists;
         } else {
             PATH = "~/";
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
-            System.out.println(fileExists);
             return fileExists;
         }
     }
-    
+
     public static String returnApplicationPath(OSType detectedOS) {
         File tmpDir;
         if (detectedOS == OSType.Windows) {
             PATH = System.getenv("APPDATA");
             tmpDir = new File(PATH + "/xoBotohP/");
-
-            return tmpDir.toString();
         } else if (detectedOS == OSType.Linux) {
             PATH = System.getProperty("user.home");
             tmpDir = new File(PATH + "/xoBotohP/");
-
         } else if (detectedOS == OSType.MacOS) {
             PATH = "~/Library";
             tmpDir = new File(PATH + "/xoBotohP/");
-
         } else {
             PATH = "~/";
             tmpDir = new File(PATH + "/xoBotohP/");
         }
         return tmpDir.toString();
     }
-    
-    
-    public static String returnApplicationPath(){
+
+    public static String returnApplicationPath() {
         return returnApplicationPath(getOperatingSystemType());
     }
 }
