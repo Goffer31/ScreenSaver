@@ -6,6 +6,7 @@
 package screensaverfxml.Controllers;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -20,12 +21,14 @@ public class ScreenSaverFXML extends Application {
     
     LicenceScreenController licenceScreenController;
     MainScreenController mainScreenController;
+    MenuScreenController menuScreenController;
     Stage stage;
+    
     public void requestSetStage(MainScreenController mainScreenController)
     {
         mainScreenController.setStage(stage);
     }
-    
+  
     @Override
     public void start(Stage primaryStage) throws Exception {
 //        

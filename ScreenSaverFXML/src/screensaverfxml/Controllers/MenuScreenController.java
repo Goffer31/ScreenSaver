@@ -5,11 +5,14 @@
  */
 package screensaverfxml.Controllers;
 
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -544,6 +549,8 @@ public class MenuScreenController implements Initializable {
      */
     @FXML
     MenuItem settingsMenuItem;
+    @FXML
+    MenuItem aboutMenuItem;
     Stage stage;
 
     @FXML
@@ -562,6 +569,33 @@ public class MenuScreenController implements Initializable {
             stage.show();
         } catch (IOException e) {
             System.out.println("Can't load settings window");
+        }
+    }
+    
+    @FXML
+    public void showHelpWEBDocument(ActionEvent event) throws IOException, URISyntaxException {
+        if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+//            String path = "/resourcePackage/PhotoBox.html";
+//            String base = "/";
+//            String relativePath = new File(base).toURI().relativize(new File(path).toURI()).getPath();
+//            File f = new File("/resourcePackage/PhotoBox.html");
+//            
+//            System.out.println(f.getAbsolutePath());
+////            String newURL = new URL(URL, relativePath);
+//            System.out.println("relativePath " + relativePath);
+////            Desktop.getDesktop().browse(new URI(relativePath));
+//            File a = new File("/resourcePackage/PhotoBox.html");
+//            File parentFolder = new File(a.getParent());
+//            File b = new File(parentFolder, "../resourcePackage/PhotoBox.html");
+//            String absolute = b.getCanonicalPath();
+//            System.out.println("absolute: " + absolute);
+//            
+            URL url = MenuScreenController.class.getResource("/resourcePackage/PhotoBox.html");
+            URI uri;
+            uri = url.toURI();
+            System.out.println("url "  + url);
+            System.out.println("uri "  + uri);
+            Desktop.getDesktop().browse(uri);
         }
     }
 
