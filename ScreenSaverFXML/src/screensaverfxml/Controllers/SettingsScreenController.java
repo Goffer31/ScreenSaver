@@ -159,32 +159,26 @@ public class SettingsScreenController implements Initializable {
          */
         RadioButtonsGroup();
 
-        //---***---***---***---***---***---***---***---***---***---***---***---*---*
         /**
          * Choosing folders to save photos
          */
         targetFolderButton1.setOnAction(e -> {
             whichIsLastClicked = 0;
-            System.out.println("Which is last clicked 0");
             savePathChooser(null);
         });
         targetFolderButton2.setOnAction(e -> {
             whichIsLastClicked = 1;
-            System.out.println("Which is last clicked 1");
             savePathChooser(null);
         });
         targetFolderButton3.setOnAction(e -> {
             whichIsLastClicked = 2;
-            System.out.println("Which is last clicked 2");
             savePathChooser(null);
         });
         targetFolderButton4.setOnAction(e -> {
             whichIsLastClicked = 3;
-            System.out.println("Which is last clicked 3");
             savePathChooser(null);
         });
 
-        //---***---***---***---***---***---***---***---***---***---***---***---*---*
         /**
          * Choosing key to save photos
          */
@@ -193,7 +187,6 @@ public class SettingsScreenController implements Initializable {
             public void handle(MouseEvent event) {
                 keyChooseButton1.setOnAction(ae -> {
                     whichIsLastClicked2 = 0;
-                    System.out.println("Which is last clicked key 0");
                     keyChooser(null);
                 });
             }
@@ -204,7 +197,6 @@ public class SettingsScreenController implements Initializable {
             public void handle(MouseEvent event) {
                 keyChooseButton2.setOnAction(ae -> {
                     whichIsLastClicked2 = 1;
-                    System.out.println("Which is last clicked key 1");
                     keyChooser(null);
                 });
             }
@@ -215,7 +207,6 @@ public class SettingsScreenController implements Initializable {
             public void handle(MouseEvent event) {
                 keyChooseButton3.setOnAction(ae -> {
                     whichIsLastClicked2 = 2;
-                    System.out.println("Which is last clicked key 2");
                     keyChooser(null);
                 });
             }
@@ -226,7 +217,6 @@ public class SettingsScreenController implements Initializable {
             public void handle(MouseEvent event) {
                 keyChooseButton4.setOnAction(ae -> {
                     whichIsLastClicked2 = 3;
-                    System.out.println("Which is last clicked key 3");
                     keyChooser(null);
                 });
             }
@@ -252,10 +242,10 @@ public class SettingsScreenController implements Initializable {
             /**
              * Printing label and count of selected images
              */
-            if(selectedImgsList == null || selectedImgsList.isEmpty()) {
+            if (selectedImgsList == null || selectedImgsList.isEmpty()) {
                 return;
             }
-            
+
             String printLabel = selectedImgsList.get(0).toString();
             int indexOfCut = printLabel.lastIndexOf("\\");
             if (indexOfCut > 0) {
@@ -270,8 +260,6 @@ public class SettingsScreenController implements Initializable {
 
     @FXML
     private void printSavePath(String path, Label label) {
-        System.out.println("Path: " + path);
-        System.out.println("Label: " + label);
         label.setText(path);
         label.setTextFill(Paint.valueOf("#4e0754"));
     }
@@ -326,7 +314,6 @@ public class SettingsScreenController implements Initializable {
     public void keyChooser(KeyEvent event) {
         switch (whichIsLastClicked2) {
             case 0:
-                System.out.println("Inside keyChooser method");
                 keyChooseButton1.setText("Click save button");
 
                 if (event == null) {
@@ -350,7 +337,6 @@ public class SettingsScreenController implements Initializable {
                 break;
 
             case 1:
-                System.out.println("Inside keyChooser method");
                 keyChooseButton2.setText("Click save button");
 
                 if (cancelationOfListening(event, keyContainer2, keyValidation2, keyChooseButton2)) {
@@ -374,7 +360,6 @@ public class SettingsScreenController implements Initializable {
                 break;
 
             case 2:
-                System.out.println("Inside keyChooser method");
                 keyChooseButton3.setText("Click save button");
 
                 if (cancelationOfListening(event, keyContainer3, keyValidation3, keyChooseButton3)) {
@@ -398,7 +383,6 @@ public class SettingsScreenController implements Initializable {
                 break;
 
             case 3:
-                System.out.println("Inside keyChooser method");
                 keyChooseButton4.setText("Click save button");
 
                 if (cancelationOfListening(event, keyContainer4, keyValidation4, keyChooseButton4)) {
@@ -451,14 +435,12 @@ public class SettingsScreenController implements Initializable {
     private boolean cancelationOfListening(KeyEvent event, String containerLabel, Label validationLabel, Button keyChooseButton) {
 
         if (event == null) {
-            System.out.println("Event is null");
             return false;
         } else if (event.getCode().equals(KeyCode.ESCAPE)) {
             event.consume();
             containerLabel = null;
             validationLabel.setText(null);
             keyChooseButton.setText("Click to choose key");
-            System.out.println("CancelationOfListening");
             whichIsLastClicked2 = -1;
             return true;
         }
@@ -473,4 +455,3 @@ public class SettingsScreenController implements Initializable {
     }
 
 }
-

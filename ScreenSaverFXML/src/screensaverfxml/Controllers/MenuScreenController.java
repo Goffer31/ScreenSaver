@@ -5,11 +5,17 @@
  */
 package screensaverfxml.Controllers;
 
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +26,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,12 +53,12 @@ import screensaverfxml.Controllers.MainScreenController.ValueContainer;
  * @author root
  */
 public class MenuScreenController implements Initializable {
+
     @FXML
     private ImageView imgFieldView;
     @FXML
     private Pane menuPane;
-    
-    
+
     private final String numberRegex = "[0-9]";
 
     Image image;
@@ -80,7 +87,7 @@ public class MenuScreenController implements Initializable {
     public void setCopyOrMoveStatusFlag(int copyOrMoveStatusFlag) {
         this.copyOrMoveStatusFlag = copyOrMoveStatusFlag;
     }
-    
+
     @FXML
     public void setFullScreenMenuItem(ActionEvent event) {
         mainScreenController.stage.setFullScreen(!mainScreenController.stage.isFullScreen());
@@ -99,7 +106,6 @@ public class MenuScreenController implements Initializable {
     public void resizeImageInsideWindow() {
         double width = valueContainer.xChecker - valueContainer.xCheckerOffset;
         double height = valueContainer.yChecker - valueContainer.yCheckerOffset;
-                                    System.out.println("menuScreenControler before");
 
         if (width != 0 && height != 0) {
             menuPane.setPrefWidth(width);
@@ -110,8 +116,6 @@ public class MenuScreenController implements Initializable {
 
             double scaleX = width / imgFieldView.getImage().getWidth();
             double scaleY = height / imgFieldView.getImage().getHeight();
-            System.out.println("scaleX " + scaleX);
-            System.out.println("scaleY " + scaleY);
 
             double scale;
             if (scaleX > scaleY) {
@@ -119,7 +123,7 @@ public class MenuScreenController implements Initializable {
             } else {
                 scale = scaleX;
             }
-           
+
             imgFieldView.setFitWidth(imgFieldView.getImage().getWidth() * scale);
             imgFieldView.setFitHeight(imgFieldView.getImage().getHeight() * scale);
 
@@ -132,11 +136,9 @@ public class MenuScreenController implements Initializable {
             imgFieldView.setY((height - imgFieldView.getImage().getHeight()) / 2);
         }
     }
-    
 
     @FXML
     public void showSout(MouseEvent mouseEvent) {
-        System.out.println("Mouse released showSout");
     }
 
     /**
@@ -215,14 +217,9 @@ public class MenuScreenController implements Initializable {
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
             singleFile = selectedImagesList.get(0);
-            System.out.println("singleFile contains: " + singleFile);
             image = new Image(singleFile.toURL().toString());
             imgFieldView.setImage(image);
             photoSweep();
-            System.out.println("loadImageOnScreen Invocation: " + singleFile.getName());
-            for (int i = 0; i < selectedImagesList.size(); i++) {
-                System.out.println(selectedImagesList.get(i).getName());
-            }
         } else {
             System.out.println("No File Selected");
         }
@@ -230,13 +227,10 @@ public class MenuScreenController implements Initializable {
 
     public void getNewImageHandler(KeyEvent event) {
         /**
-         * Code responsible for switching photos
-         * accessed from MenuScreen.fxml
+         * Code responsible for switching photos accessed from MenuScreen.fxml
          */
         imgFieldView.requestFocus();
 
-        System.out.println("getNewImageHandlerInvoked");
-        
         if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.KP_RIGHT)) {
             photoSwipCounter++;
         }
@@ -261,7 +255,6 @@ public class MenuScreenController implements Initializable {
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
-        //---***---***---***---***---***---***---***---***---***---***---*
         /**
          * Code responsible for saving photos into max four different locations
          * using customize keyCode to write folders under buttons
@@ -280,7 +273,6 @@ public class MenuScreenController implements Initializable {
                         if (copyOrMoveStatusFlag == 1) {
                             try {
                                 savePhotoWithCopy(singleFile, pathTargetArrayList.get(j));
-                                System.out.println("savePhotoWithCopy1");
                             } catch (IOException e) {
                                 Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, e);
                             }
@@ -289,17 +281,14 @@ public class MenuScreenController implements Initializable {
                             try {
                                 savePhotoWithCopy(singleFile, pathTargetArrayList.get(j));
                                 patchContainer = pathTargetArrayList.get(j);
-                                System.out.println("savePhotoWithCopy2");
                             } catch (IOException e) {
                                 Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, e);
                             }
-                            System.out.println("savePhotoWithDelete1");
                         }
                     }
                 }
                 if (copyOrMoveStatusFlag == 1) {
                     clearListAfterCopy();
-                    System.out.println("clearListAfterCopy()");
                     return;
                 }
                 if (copyOrMoveStatusFlag == 2) {
@@ -313,13 +302,13 @@ public class MenuScreenController implements Initializable {
 
     @FXML
     public void imageRotation(KeyEvent event) {
-        if(event.getCode().equals(KeyCode.R)){
+        if (event.getCode().equals(KeyCode.R)) {
             imgFieldView.setRotate(90);
-        } else if(event.getCode().equals(KeyCode.L)){
+        } else if (event.getCode().equals(KeyCode.L)) {
             imgFieldView.setRotate(-90);
         }
     }
-    
+
     public void imageToFile(Image image) throws IOException {
 
         if (singleFile == null) {
@@ -360,9 +349,7 @@ public class MenuScreenController implements Initializable {
     }
 
     private void photoSweep() {
-                            
 
-        
         if (selectedImgsList == null || selectedImgsList.isEmpty()) {
             singleFile = null;
             Image emptyListImage = new Image("/resourcePackage/greybox.png");
@@ -380,122 +367,18 @@ public class MenuScreenController implements Initializable {
         /**
          * set greybox logo if list is empty
          */
-        System.out.println("sizeOfSelectedImgsList: " + selectedImgsList.size());
         singleFile = selectedImgsList.get(photoSwipCounter);
         image = new Image(singleFile.toURI().toString());
         imgFieldView.setImage(image);
         resizeImageInsideWindow();
     }
-    
 
-    
-//    private BufferedImage originalBI;
-//    private BufferedImage newIB;
-//   private int pixels[][];
-//   private final JFileChooser openFileChooser;
-//   private final JFileChooser saveFileChooser;
-//    public MenuScreenController(JFileChooser openFileChooser, JFileChooser saveFileChooser) {
-//        this.openFileChooser = openFileChooser;
-//        this.saveFileChooser = saveFileChooser;
-//    }
-        
-//    public void saveFileButtonActionPerformed(ActionEvent actionEvent){
-//        imageToArray();
-//        makeFilteredImage();
-//        saveImage();
-//    }
-        
-//        public void imageToArray() {
-//        int width = originalBI.getWidth();
-//        int heigh = originalBI.getHeight();
-//        
-//        newIB = new BufferedImage(width, heigh, BufferedImage.TYPE_INT_ARGB);
-//        
-//        pixels = new int[width][heigh];
-//        
-//        for(int i = 0; i < width; i++) {
-//            for(int j = 0; j < heigh; j++) {
-//                pixels[i][j] = originalBI.getRGB(i, j);
-//            }
-//        }
-//    }
-    
-    
-    
-//        @FXML
-//    private void addKeyHandler(ImageView imageView) {
-//        Group root = new Group();
-//        File singleFile;
-//        Image image;
-//        
-//        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
-//        public void handle(KeyEvent ke) {
-//            if (ke.getCode() == KeyCode.T) {
-////                singleFile = selectedImgsList.get(addKeyHandlerCounter);
-//            }
-//        }
-//    });
-//    }
-    
-// Zrobione na FileChooserze    
-//        @FXML
-//    public void imgDoubleClick(MouseEvent mouseEvent) throws MalformedURLException {
-//        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-//            if(mouseEvent.getClickCount() == 2) {
-//                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"),
-//                        new ExtensionFilter(".jpg/.jpeg", "*.jpeg", "*.jpg"),
-//                        new ExtensionFilter(".png", "*.png"));
-//                selectedImgsList = fileChooser.showOpenMultipleDialog(null);
-//                if(selectedImgsList != null) {
-//                        singleFile = selectedImgsList.get(numberOfPhoto);
-//                        Image image = new Image(singleFile.toURL().toString(),
-//                        900, 400,
-//                        true, true, true);
-//                        imgFieldView.setImage(image);                 
-//                    } else {
-//                    System.out.println("No File Selected");
-//                }
-//            }
-//        }
-//    }
-    
-    
-        
-//    @FXML
-//    public void scrollImage(KeyEvent key) throws MalformedURLException{
-//        int counter = 0;
-//        int listSize = selectedImgsList.size();
-//        
-//        if(key.getCode() == KeyCode.LEFT && key.getCode() == KeyCode.ALT) {
-//            counter++;
-//        }
-//        
-//        if(key.getCode() == KeyCode.RIGHT) {
-//            counter--;
-//        }
-//        
-//        if(counter < 0) {
-//            counter = listSize - counter;
-//        }
-//        
-//        
-//        
-//        singleFile = selectedImgsList.get(counter);
-//        Image image = new Image(singleFile.toURL().toString(),
-//            900, 400,
-//            true, true, true);
-//        imgFieldView.setImage(image);
-//    }
-    
-    
-   
     public String pathChooser() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select save location");
         if (selectedDirectory == null) {
             selectedDirectory = directoryChooser.showDialog(null);
         }
-        System.out.println("Directory choosed: " + selectedDirectory.getAbsolutePath());
         return selectedDirectory.getAbsolutePath();
     }
 
@@ -516,7 +399,6 @@ public class MenuScreenController implements Initializable {
             Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
         }
         String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
-        System.out.println("fileNameToSave2: " + fileNameAndPathToSave);
         singleFile.renameTo(new File(fileNameAndPathToSave));
         singleFile.delete();
     }
@@ -538,12 +420,13 @@ public class MenuScreenController implements Initializable {
         photoSweep();
     }
 
-    //---***---***---***---***---***---***---***---***---***---***---***---*---*
     /**
      * Code responsible for load settings window
      */
     @FXML
     MenuItem settingsMenuItem;
+    @FXML
+    MenuItem aboutMenuItem;
     Stage stage;
 
     @FXML
@@ -563,6 +446,43 @@ public class MenuScreenController implements Initializable {
         } catch (IOException e) {
             System.out.println("Can't load settings window");
         }
+    }
+
+    @FXML
+    public void copyResourcesAndLoad() {
+        File file = null;
+        String resource = "/resourcePackage/PhotoBox.html";
+        URL res = getClass().getResource(resource);
+        if (res.getProtocol().equals("jar")) {
+            try {
+                InputStream input = getClass().getResourceAsStream(resource);
+
+                file = new File(SystemCheck.returnApplicationPath() + "/tempfile.html");
+                OutputStream out = new FileOutputStream(file);
+                int read;
+                byte[] bytes = new byte[1024];
+
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                out.close();
+                String path = file.getAbsolutePath();
+                System.out.println(URI.create(path.replace("\\", "/")));
+
+                Desktop.getDesktop().browse(URI.create(path.replace("\\", "/")));
+                file.deleteOnExit();
+            } catch (IOException ex) {
+                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            //this will probably work in your IDE, but not from a JAR
+            file = new File(res.getFile());
+        }
+
+        if (file != null && !file.exists()) {
+            throw new RuntimeException("Error: File " + file + " not found!");
+        }
+
     }
 
     @FXML
