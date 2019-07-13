@@ -101,12 +101,13 @@ public class SystemCheck {
             fileExists = tmpDir.exists();
             return fileExists;
         } else if (detectedOS == OSType.MacOS) {
-            PATH = "~/Library";
+            PATH = System.getProperty("user.home");
+//            "~/Library";
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
             return fileExists;
         } else {
-            PATH = "~/";
+            PATH = System.getProperty("user.home");
             File tmpDir = new File(PATH + "/xoBotohP/" + FILENAME);
             fileExists = tmpDir.exists();
             return fileExists;
