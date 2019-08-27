@@ -65,7 +65,6 @@ public class MainScreenController {
     }
 
     public class ValueContainer {
-
         public double yChecker = 0;
         public double xChecker = 0;
         public double yCheckerOffset = 0;

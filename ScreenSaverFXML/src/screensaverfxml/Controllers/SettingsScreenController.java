@@ -9,6 +9,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
@@ -31,6 +33,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * FXML Controller class
@@ -113,13 +117,13 @@ public class SettingsScreenController implements Initializable {
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final FileChooser fileChooser = new FileChooser();
 
-    List<File> selectedImgsList;
+    List<String> selectedImgsList = new LinkedList<>();
 
-    public List<File> getSelectedImgsList() {
+    public List<String> getSelectedImgsList() {
         return selectedImgsList;
     }
 
-    public void setSelectedImgsList(List<File> selectedImgsList) {
+    public void setSelectedImgsList(List<String> selectedImgsList) {
         this.selectedImgsList = selectedImgsList;
     }
 
@@ -230,13 +234,49 @@ public class SettingsScreenController implements Initializable {
 
     /**
      * Load files and transfer data to MenuScreenController
+     * @param mouseEvent
+     * @throws java.net.MalformedURLException
      */
     @FXML
     public void sourceFolderChooser(MouseEvent mouseEvent) throws MalformedURLException {
         if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
-            selectedImgsList = fileChooser.showOpenMultipleDialog(null);
+            List<File> selectedImgsFileList = fileChooser.showOpenMultipleDialog(null);
+            System.out.println("SelectedImgsFileList = " + selectedImgsFileList.size());
+            for (int i = 0; i < selectedImgsFileList.size(); i++) {
+//                String temporaryString = selectedImgsFileList.get(i).toString();
+//                selectedImgsList.add(temporaryString);
+//                System.out.println("Temporary String " + i + " = " + temporaryString);
+                selectedImgsList.add(i, selectedImgsFileList.get(i).toString());
+                System.out.println("selectedImgsList = " + selectedImgsList);
+//                selectedImgsList.add(selectedImgsFileList.get(i).toString());
+                System.out.println("selectedImgsList loop = " + i + " " + selectedImgsList.get(i));
+            }
+//            selectedImgsList = fileChooser.showOpenMultipleDialog(null);
+////            selectedImgsList.add(fileChooser.showOpenMultipleDialog(null).toString());
+//            List<File> selectedImgListFile = null;
+//            selectedImgListFile = fileChooser.showOpenMultipleDialog(null);
+//            if(selectedImgListFile != null) {
+//                for(int i = 0; i < selectedImgListFile.size(); i++) {
+//                    selectedImgsList.set(i, selectedImgListFile.get(i).getPath());
+//                }
+//            }
+//            
+////            selectedImgsList.add(fileChooser.showOpenMultipleDialog(null));
+//            for (int i = 0; i < selectedImgsList.size(); i++) {
+//                System.out.println("SelectedImgsList = " + getSelectedImgsList().get(i));
+//            }
 
+
+//            JFileChooser chooser = new JFileChooser();
+//            FileNameExtensionFilter filter = new FileNameExtensionFilter("Img Files", "jpg", "jpeg", "png");
+//            chooser.setFileFilter(filter);
+//            int returnValue = chooser.showOpenDialog(null);
+//            if(returnValue == JFileChooser.APPROVE_OPTION) {
+//               System.out.println("You choose to open this file: " + chooser.getSelectedFile().getName());
+//            }
+//            selectedImgsList.add(chooser.getSelectedFile().getAbsolutePath());
+            
             menuScreenController.loadImageOnScreen(selectedImgsList);
 
             /**
@@ -246,8 +286,9 @@ public class SettingsScreenController implements Initializable {
                 return;
             }
 
-            String printLabel = selectedImgsList.get(0).toString();
-            int indexOfCut = printLabel.lastIndexOf("\\");
+            String printLabel = selectedImgsList.get(0);
+//            int indexOfCut = printLabel.lastIndexOf("\\");
+            int indexOfCut = printLabel.lastIndexOf("/");
             if (indexOfCut > 0) {
                 printLabel = printLabel.substring(0, indexOfCut);
             }

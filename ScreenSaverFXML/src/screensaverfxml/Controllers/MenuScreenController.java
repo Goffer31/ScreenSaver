@@ -72,8 +72,8 @@ public class MenuScreenController implements Initializable {
 
     final FileChooser fileChooser = new FileChooser();
 
-    List<File> selectedImgsList;
-    File singleFile;
+    List<String> selectedImgsList;
+    String singleFile;
     File selectedDirectory = null;
     ArrayList<String> keyCodeStringArrayList;
     ArrayList<KeyCode> keyCodeArrayList;
@@ -212,12 +212,14 @@ public class MenuScreenController implements Initializable {
     public void imageViewRequestFocus() {
         imgFieldView.requestFocus();
     }
-
-    public void loadImageOnScreen(List<File> selectedImagesList) throws MalformedURLException {
+    
+    public void loadImageOnScreen(List<String> selectedImagesList) throws MalformedURLException {
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
             singleFile = selectedImagesList.get(0);
-            image = new Image(singleFile.toURL().toString());
+            System.out.println("singleFile = " + singleFile);
+            File temporaryFile = new File(singleFile);
+            image = new Image(temporaryFile.toURI().toURL().toExternalForm());
             imgFieldView.setImage(image);
             photoSweep();
         } else {
@@ -240,6 +242,20 @@ public class MenuScreenController implements Initializable {
         }
 
         photoSweep();
+        
+        if(event.getCode().equals(KeyCode.DELETE)) {
+            try {
+//                Files.deleteIfExists(Paths.get(singleFile));
+//                Files.deleteIfExists(Paths.get(selectedImgsList.get(photoSwipCounter)));
+                Files.deleteIfExists(Paths.get(singleFile));
+                selectedImgsList.remove(photoSwipCounter);
+//                selectedImgsList.set(photoSwipCounter, null);
+            } catch (IOException ex) {
+                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            photoSwipCounter++;
+            photoSweep();
+        }
 
         /**
          * Code responsible for rotate the image
@@ -252,6 +268,12 @@ public class MenuScreenController implements Initializable {
 
         if (event.getCode().equals(KeyCode.COMMA)) {
             angleRotation -= 90;
+            imgFieldView.setRotate(angleRotation);
+            imgFieldView.getViewport();
+        }
+        
+        if(event.getCode().equals(KeyCode.SLASH)) {
+            angleRotation += 180;
             imgFieldView.setRotate(angleRotation);
             imgFieldView.getViewport();
         }
@@ -310,13 +332,12 @@ public class MenuScreenController implements Initializable {
     }
 
     public void imageToFile(Image image) throws IOException {
-
         if (singleFile == null) {
             return;
         }
-
-        BufferedImage bufferedImage = ImageIO.read(singleFile);
-
+        File newSingleFile = new File(singleFile);
+        BufferedImage bufferedImage = ImageIO.read(newSingleFile);
+        
         while (angleRotation < 0 || angleRotation >= 360) {
             if (angleRotation < 0) {
                 angleRotation += 360;
@@ -331,7 +352,7 @@ public class MenuScreenController implements Initializable {
             bufferedImage = rotateClockwise90(bufferedImage);
         }
 
-        ImageIO.write(bufferedImage, "png", new File(singleFile.getAbsolutePath()));
+        ImageIO.write(bufferedImage, "png", new File(newSingleFile.getAbsolutePath()));
     }
 
     public static BufferedImage rotateClockwise90(BufferedImage src) {
@@ -347,9 +368,22 @@ public class MenuScreenController implements Initializable {
 
         return dest;
     }
+    
+    public static BufferedImage rotateClockwise180(BufferedImage src) {
+        int width = src.getWidth();
+        int height = src.getHeight();
+
+        BufferedImage dest = new BufferedImage(height, width, src.getType());
+
+        Graphics2D graphics2D = dest.createGraphics();
+//        graphics2D.translate((height - width) / 2, (height - width) / 2);
+        graphics2D.rotate(Math.PI, height, width);
+        graphics2D.drawRenderedImage(src, null);
+
+        return dest;
+    }
 
     private void photoSweep() {
-
         if (selectedImgsList == null || selectedImgsList.isEmpty()) {
             singleFile = null;
             Image emptyListImage = new Image("/resourcePackage/greybox.png");
@@ -368,7 +402,12 @@ public class MenuScreenController implements Initializable {
          * set greybox logo if list is empty
          */
         singleFile = selectedImgsList.get(photoSwipCounter);
-        image = new Image(singleFile.toURI().toString());
+        File temporaryFile = new File(singleFile);
+        try {
+            image = new Image(temporaryFile.toURI().toURL().toExternalForm());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         imgFieldView.setImage(image);
         resizeImageInsideWindow();
     }
@@ -383,28 +422,39 @@ public class MenuScreenController implements Initializable {
     }
 
     @FXML
-    private void savePhotoWithCopy(File singleFile, String directory) throws IOException {
+    private void savePhotoWithCopy(String singleFile, String directory) throws IOException {
         imageToFile(imgFieldView.getImage());
-        Path sourceDirectory = Paths.get(singleFile.getAbsolutePath());
-        String targetDirectoryString = directory + "\\" + singleFile.getName();
+        Path sourceDirectory = Paths.get(singleFile);
+        String fileName = new File(singleFile).getName();
+//        int index = singleFile.lastIndexOf("/");
+//        int index = singleFile.replace("\\\\", "/").lastIndexOf("/");
+//        String fileName = singleFile.substring(index + 1);
+//        String targetDirectoryString = directory + "\\" + singleFile.getName();
+        System.out.println("directory = " + directory);
+        System.out.println("fileName = " + fileName);
+        String targetDirectoryString = directory + "/" + fileName;
         Path targetDirectory = Paths.get(targetDirectoryString);
         Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @FXML
-    public void savePhotoAndDelete(File singleFile, String directory) {
+    public void savePhotoAndDelete(String singleImage, String directory) {
         try {
             imageToFile(imgFieldView.getImage());
         } catch (IOException ex) {
             Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String fileNameAndPathToSave = directory + "\\" + singleFile.getName();
-        singleFile.renameTo(new File(fileNameAndPathToSave));
-        singleFile.delete();
+        int index = singleImage.lastIndexOf("/");
+        String fileName = singleImage.substring(index + 1);
+        String fileNameAndPathToSave = directory + "/" + fileName;
+//        String fileNameAndPathToSave = directory + "/" + singleFile.getName();
+        File singleImageFile = new File(singleImage);
+        singleImageFile.renameTo(new File(fileNameAndPathToSave));
+        singleImageFile.delete();
     }
 
     private void clearListAfterCopy() {
-        ArrayList<File> temporaryArrayList = new ArrayList<>();
+        ArrayList<String> temporaryArrayList = new ArrayList<>();
         for (int i = 0; i < selectedImgsList.size(); i++) {
             if (i == photoSwipCounter) {
                 continue;
