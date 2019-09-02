@@ -5,37 +5,29 @@
  */
 package screensaverfxml.Controllers;
 
-import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -55,8 +47,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import screensaverfxml.Controllers.MainScreenController.ValueContainer;
 
 /**
@@ -203,7 +193,6 @@ public class MenuScreenController implements Initializable {
                 pathTargetArrayList.add(null);
             }
         }
-        System.out.println("pathTargetArrayList contains: " + pathTargetArrayList);
         return pathTargetArrayList;
     }
 
@@ -228,7 +217,6 @@ public class MenuScreenController implements Initializable {
         this.selectedImgsList = selectedImagesList;
         if (selectedImagesList != null) {
             singleFile = selectedImagesList.get(0);
-            System.out.println("singleFile = " + singleFile);
             File temporaryFile = new File(singleFile);
             image = new Image(temporaryFile.toURI().toURL().toExternalForm());
             imgFieldView.setImage(image);
@@ -262,11 +250,8 @@ public class MenuScreenController implements Initializable {
         
         if(event.getCode().equals(KeyCode.DELETE)) {
             try {
-//                Files.deleteIfExists(Paths.get(singleFile));
-//                Files.deleteIfExists(Paths.get(selectedImgsList.get(photoSwipCounter)));
                 Files.deleteIfExists(Paths.get(singleFile));
                 selectedImgsList.remove(photoSwipCounter);
-//                selectedImgsList.set(photoSwipCounter, null);
             } catch (IOException ex) {
                 Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -348,47 +333,6 @@ public class MenuScreenController implements Initializable {
         }
     }
     
-//    public static final int ROTATE_LEFT = 270;
-//    public static final int ROTATE_RIGHT = 90;
-//    public static final int UPSIDE_DOWN = 180;
-//    public void imageToFile(Image image, double angle) {
-//        try {
-//            if(singleFile == null) {
-//                return;
-//            }
-//            File inputFile = new File(singleFile);
-//            ImageInputStream iis = ImageIO.createImageInputStream(inputFile);
-//            Iterator<ImageReader> iterator = ImageIO.getImageReaders(iis);
-//            ImageReader reader = iterator.next();
-//            String format = reader.getFormatName();
-//
-//            BufferedImage bufferedImage = ImageIO.read(iis);
-//            int width = bufferedImage.getWidth();
-//            int height = bufferedImage.getHeight();
-//
-//            BufferedImage rotated = new BufferedImage(height, width, bufferedImage.getType());
-//            for (int y = 0; y < height; y++) {
-//                for (int x = 0; x < width; x++) {
-//                    switch ((int)angle) {
-//                        case ROTATE_LEFT:
-//                            rotated.setRGB(y, (width - 1) - x, bufferedImage.getRGB(x, y));
-//                            break;
-//                        case ROTATE_RIGHT:
-//                            rotated.setRGB((height - 1) - y, x, bufferedImage.getRGB(x, y));
-//                            break;
-//                        case UPSIDE_DOWN:
-//                            rotated.setRGB(y, x, bufferedImage.getRGB(x, y));
-//                            break;
-//                    }
-//                }
-//            }
-//            ImageIO.write(rotated, format, inputFile);
-//        } catch (IOException ex) {
-//            Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//    }
-
     public void saveFileAfterRotation(Image image) throws IOException {
         if (singleFile == null) {
             return;
@@ -417,8 +361,9 @@ public class MenuScreenController implements Initializable {
      * nie działa przerobic
      * @param image
      * @param angle 
+     * @return  
      */
-    public void saveFileAfterRotation(Image image, double angle) {
+    public BufferedImage saveFileAfterRotation(Image image, double angle) {
         double sin = Math.abs(Math.sin(Math.toRadians(angle)));
         double cos = Math.abs(Math.cos(Math.toRadians(angle)));
         int w = (int) image.getWidth();
@@ -432,9 +377,9 @@ public class MenuScreenController implements Initializable {
         g.rotate(Math.toRadians(angle), w/2, h/2);
         g.drawRenderedImage(bimg, null);
         g.dispose();
-        System.out.println("g.toString = " + g.toString());
-        singleFile = g.toString();
+        return bimg;
     }
+    
     
     public BufferedImage rotateImageByAngle(BufferedImage img, double angle) {
         double rads = Math.toRadians(angle);
@@ -472,20 +417,6 @@ public class MenuScreenController implements Initializable {
         Graphics2D graphics2D = dest.createGraphics();
         graphics2D.translate((height - width) / 2, (height - width) / 2);
         graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
-        graphics2D.drawRenderedImage(src, null);
-
-        return dest;
-    }
-    
-    public static BufferedImage rotateClockwise180(BufferedImage src) {
-        int width = src.getWidth();
-        int height = src.getHeight();
-
-        BufferedImage dest = new BufferedImage(height, width, src.getType());
-        
-        Graphics2D graphics2D = dest.createGraphics();
-//        graphics2D.translate((height - width) / 2, (height - width) / 2);
-        graphics2D.rotate(Math.PI, height, width);
         graphics2D.drawRenderedImage(src, null);
 
         return dest;
@@ -529,95 +460,63 @@ public class MenuScreenController implements Initializable {
         return selectedDirectory.getAbsolutePath();
     }
 
+    private ExecutorService executorService;
+    
+    public MenuScreenController() {
+        this.executorService = Executors.newFixedThreadPool(1);
+    }
+    
     @FXML
     private void savePhotoWithCopy(String singleFile, String directory) throws IOException {
-        System.out.println("imgFieldView.getImage().toString() = " + imgFieldView.getImage().toString());
         if (angleRotation != 0) {
-//            saveFileAfterRotation(imgFieldView.getImage(), angleRotation);
-            File imageFile = new File(singleFile);
-            BufferedImage image = ImageIO.read(imageFile);
-            System.out.println("imageBFImageIO = " + image);
-            BufferedImage rotated = rotateImageByAngle(image, angleRotation);
-            /**
-             * przy ustawieniu jpg otrzymujemy niezwykłe kolory
-             */
-            ImageIO.write(rotated, "jpg", new File(imageFile.getName()));
-        }
+            int temporaryAngle = ((int) angleRotation / 90) > 0 ? ((int) angleRotation / 90) : (((int) angleRotation / 90) * (-1));
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        File imageFile = new File(singleFile);
+                        BufferedImage image = ImageIO.read(imageFile);
+                        for(int i = 0; i < temporaryAngle; i++) {
+                            image = rotateClockwise90(image);
+                        }
+                        ImageIO.write(image, "png", new File(directory + "/" + imageFile.getName()));
+                    } catch (IOException ex) {
+                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            };
+            executorService.submit(r);            
+        } else {
         Path sourceDirectory = Paths.get(singleFile);
         String fileName = new File(singleFile).getName();
-        System.out.println("directory = " + directory);
-        System.out.println("fileName = " + fileName);
         String targetDirectoryString = directory + "/" + fileName;
         Path targetDirectory = Paths.get(targetDirectoryString);
-//        Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);
-//-------------------------------------------------------------------
-//        InputStream inputStream = null;
-//        OutputStream outputStream = null;
-//        File sourceFile = new File(singleFile);
-//        File destinationFile = new File(targetDirectoryString);
-//        try {
-//            inputStream = new FileInputStream(sourceFile);
-//            outputStream = new FileOutputStream(destinationFile);
-//            byte[] buffer = new byte[1024];
-//            int lenght;
-//            while ((lenght = inputStream.read(buffer)) > 0) {
-//                outputStream.write(buffer, 0, lenght);
-//            }
-//        } finally {
-//            inputStream.close();
-//            outputStream.close();
-//        }
-//-------------------------------------------------------------------
+        Files.copy(sourceDirectory, targetDirectory, StandardCopyOption.REPLACE_EXISTING);            
+        }
     }
 
     @FXML
     public void savePhotoAndDelete(String singleImage, String directory) {
-        if (angleRotation != 0) {
-            try {
-                saveFileAfterRotation(imgFieldView.getImage());
-            } catch (IOException ex) {
-                Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        int index = singleImage.lastIndexOf("/");
-        String fileName = singleImage.substring(index + 1);
-        String fileNameAndPathToSave = directory + "/" + fileName;
-//        String fileNameAndPathToSave = directory + "/" + singleFile.getName();
-        File singleImageFile = new File(singleImage);
-        
-        singleImageFile.renameTo(new File(fileNameAndPathToSave));
-//--------------------------------------------------------------------
-//        FileInputStream inputStream = null;
-//        FileOutputStream outputStream = null;
-//        singleImageFile.deleteOnExit();
-//        try { 
-//            inputStream = new FileInputStream(singleImageFile);
-//            outputStream = new FileOutputStream(fileNameAndPathToSave);
-//        } catch(FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        
-//        final FileChannel inChannel = inputStream.getChannel();
-//        final FileChannel outChannel = outputStream.getChannel();
-//        
-//        try {
-//            inChannel.transferTo(0, inChannel.size(), outChannel);
-//        } catch (IOException ex) {
-//            Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        finally {
-//            try {
-//                inChannel.close();
-//                outChannel.close();
-//                inputStream.close();
-//                outputStream.close();
-//            } catch(IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//--------------------------------------------------------------------   
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                if (angleRotation != 0) {
+                    try {
+                        saveFileAfterRotation(imgFieldView.getImage());
+                    } catch (IOException ex) {
+                        Logger.getLogger(MenuScreenController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                int index = singleImage.lastIndexOf("/");
+                String fileName = singleImage.substring(index + 1);
+                String fileNameAndPathToSave = directory + "/" + fileName;
+                File singleImageFile = new File(singleImage);
+                singleImageFile.renameTo(new File(fileNameAndPathToSave));
+                singleImageFile.delete();
 
-        singleImageFile.delete();
+            }
+        };
+        executorService.submit(r);   
     }
 
     private void clearListAfterCopy() {
@@ -684,8 +583,6 @@ public class MenuScreenController implements Initializable {
                 }
                 out.close();
                 String path = file.getAbsolutePath();
-                System.out.println(URI.create(path.replace("\\", "/")));
-
                 Desktop.getDesktop().browse(URI.create(path.replace("\\", "/")));
                 file.deleteOnExit();
             } catch (IOException ex) {

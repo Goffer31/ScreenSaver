@@ -9,7 +9,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -33,8 +32,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * FXML Controller class
@@ -242,40 +239,9 @@ public class SettingsScreenController implements Initializable {
         if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
             fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Img Files", "*.jpg", "*.jpeg", "*.png"));
             List<File> selectedImgsFileList = fileChooser.showOpenMultipleDialog(null);
-            System.out.println("SelectedImgsFileList = " + selectedImgsFileList.size());
             for (int i = 0; i < selectedImgsFileList.size(); i++) {
-//                String temporaryString = selectedImgsFileList.get(i).toString();
-//                selectedImgsList.add(temporaryString);
-//                System.out.println("Temporary String " + i + " = " + temporaryString);
                 selectedImgsList.add(i, selectedImgsFileList.get(i).toString());
-                System.out.println("selectedImgsList = " + selectedImgsList);
-//                selectedImgsList.add(selectedImgsFileList.get(i).toString());
-                System.out.println("selectedImgsList loop = " + i + " " + selectedImgsList.get(i));
             }
-//            selectedImgsList = fileChooser.showOpenMultipleDialog(null);
-////            selectedImgsList.add(fileChooser.showOpenMultipleDialog(null).toString());
-//            List<File> selectedImgListFile = null;
-//            selectedImgListFile = fileChooser.showOpenMultipleDialog(null);
-//            if(selectedImgListFile != null) {
-//                for(int i = 0; i < selectedImgListFile.size(); i++) {
-//                    selectedImgsList.set(i, selectedImgListFile.get(i).getPath());
-//                }
-//            }
-//            
-////            selectedImgsList.add(fileChooser.showOpenMultipleDialog(null));
-//            for (int i = 0; i < selectedImgsList.size(); i++) {
-//                System.out.println("SelectedImgsList = " + getSelectedImgsList().get(i));
-//            }
-
-
-//            JFileChooser chooser = new JFileChooser();
-//            FileNameExtensionFilter filter = new FileNameExtensionFilter("Img Files", "jpg", "jpeg", "png");
-//            chooser.setFileFilter(filter);
-//            int returnValue = chooser.showOpenDialog(null);
-//            if(returnValue == JFileChooser.APPROVE_OPTION) {
-//               System.out.println("You choose to open this file: " + chooser.getSelectedFile().getName());
-//            }
-//            selectedImgsList.add(chooser.getSelectedFile().getAbsolutePath());
             
             menuScreenController.loadImageOnScreen(selectedImgsList);
 
@@ -287,7 +253,6 @@ public class SettingsScreenController implements Initializable {
             }
 
             String printLabel = selectedImgsList.get(0);
-//            int indexOfCut = printLabel.lastIndexOf("\\");
             int indexOfCut = printLabel.lastIndexOf("/");
             if (indexOfCut > 0) {
                 printLabel = printLabel.substring(0, indexOfCut);
@@ -311,25 +276,21 @@ public class SettingsScreenController implements Initializable {
             case 0:
                 directoryChooser.setTitle("Select first save location");
                 selectedDirectory[0] = directoryChooser.showDialog(null);
-                System.out.println("First Path: " + selectedDirectory[0]);
                 printSavePath(selectedDirectory[0].getAbsolutePath(), targetPathLabel1);
                 break;
             case 1:
                 directoryChooser.setTitle("Select second save location");
                 selectedDirectory[1] = directoryChooser.showDialog(null);
-                System.out.println("Second Path: " + selectedDirectory[1]);
                 printSavePath(selectedDirectory[1].getAbsolutePath(), targetPathLabel2);
                 break;
             case 2:
                 directoryChooser.setTitle("Select third save location");
                 selectedDirectory[2] = directoryChooser.showDialog(null);
-                System.out.println("Third Path: " + selectedDirectory[2]);
                 printSavePath(selectedDirectory[2].getAbsolutePath(), targetPathLabel3);
                 break;
             case 3:
                 directoryChooser.setTitle("Select fourth save location");
                 selectedDirectory[3] = directoryChooser.showDialog(null);
-                System.out.println("Fourth Path: " + selectedDirectory[3]);
                 printSavePath(selectedDirectory[3].getAbsolutePath(), targetPathLabel4);
                 break;
         }
